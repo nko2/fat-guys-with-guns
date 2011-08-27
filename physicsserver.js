@@ -137,6 +137,10 @@ Game.prototype.begin = function(){
 	    },15*1000);
     })(this);
 };
+Game.prototype.redisRecord = function(){
+    return {name:this.gameId,viewers:this.viewers,controllers:this.controllers};
+};
+
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
 function chooseControllers(set){
     return set.slice(0,2);
@@ -153,6 +157,19 @@ function setupPhysics(game){
     };
     loop();
 }
+// Update the game room data on redis every n seconds.
+function updateRedis(){
+    var rooms = [];
+    for(var i in games){
+	rooms.push(games[i].redisRecord());
+    }
+    redis.mset('server-'+serverNumber,JSON.stringify(rooms),function(err,_){
+	    if(err)
+		console.log("Redis-error:"+err);
+	});
+    setTimeout(updateRedis,10*1000);
+}
+updateRedis();
 //This is the server's real main-loop. Checks if games can be started, and then starts them
 function pollForReadyGames(){
     for(var i in games){
