@@ -1,19 +1,19 @@
 $(document).ready(function() {
-    setTimeout(checkForConnection, 8000);
+    setTimeout(checkForAction, 3000);
 
-    function checkForConnection() {
+    function checkForAction() {
         var phone_secret = getCookie("phone_secret");
-
         $.ajax({
-            url: "/is_phone_attached/"+phone_secret,
+            url: "/phone/"+phone_secret+"/action",
             type: 'get',
             cache: false,
             dataType: 'json',
             success: function(data){
-                if (data.is_connected && data.is_connected.toString()=="true") {
-                    window.location = "/room_list";
+                if (data) {
+                    console.log("Polled Data", data);
+                    setTimeout(checkForAction, 3000);
                 }else {
-                    setTimeout(checkForConnection, 3000);
+                    setTimeout(checkForAction, 3000);
                 }
             }
         });

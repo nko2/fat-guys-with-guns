@@ -7,6 +7,11 @@ module.exports = function(app, redis_client) {
          res.redirect("/phone");
          return;
         }
+        var phone_secret = req.cookies['phone_secret'];
+        /*if (phone_secret) {
+            res.redirect("/home");
+            return;
+        };*/
 
         res.render('index', {
         });
@@ -16,13 +21,7 @@ module.exports = function(app, redis_client) {
         var user_name = req.body.user_name;
 
         findUniqueKey(function(phone_secret) {
-            redis_client.hmset("phone_secret:"+phone_secret, {
-                "user_name" : user_name,
-                "games_played" : 0,
-                "last_played_timestamp" : new Date()
-            });
-            // Expire ids so we can reuse them later
-            redis_client.expire("phone_secret:"+phone_secret, 86400); // One Day
+            Util.setRedisNewUserData(redis_client, phone_secret, user_name);
 
             res.cookie('user_id', user_name, { httpOnly: false });
             res.cookie('phone_secret', phone_secret, { httpOnly: false });
@@ -33,11 +32,13 @@ module.exports = function(app, redis_client) {
     app.get('/home', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
-
-        res.render('home', {
-            user_name : user_name,
-            phone_secret : phone_secret,
-            javascripts : ["/javascripts/connected_poller.js"]
+        Util.setRedisUserData(redis_client, phone_secret, { is_connected : false});
+        Util.getRedisUserData(redis_client, phone_secret, function(data) {
+                res.render('home', {
+                    user_name : user_name,
+                    phone_secret : phone_secret,
+                    javascripts : ["/javascripts/connected_poller.js"]
+                });
         });
     });
 
@@ -45,10 +46,7 @@ module.exports = function(app, redis_client) {
     function findUniqueKey(callback) {
         var phone_secret = StringHelper.createRandomWord(7);
         // Make sure we don't already have a redis object with this value, if we do, get another
-        redis_client.hgetall("phone_secret:"+phone_secret, function(err, data) {
-            if (err) {
-                console.warn(err);
-            }
+        Util.getRedisUserData(redis_client, phone_secret, function(data) {
             if (!data.user_name) {
                 callback(phone_secret)
             }else {

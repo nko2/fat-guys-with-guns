@@ -1,8 +1,8 @@
 div
     p Welcome: #{user_name}
-    div(style="margin-bottom: 5px;") Rooms:
-    - for(room in room_list) {
+    div(style="margin-bottom: 5px;") Pick a room to spectate or view:
+    - room_list.forEach(function(room) {
       div
-        span #{room_list[room].name}&nbsp;
-    - };
+        a(href="/room/#{room}") Room #{room}
+    - });
 div
