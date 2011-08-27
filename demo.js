@@ -9,10 +9,11 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2Fixture = Box2D.Dynamics.b2Fixture,
     b2World = Box2D.Dynamics.b2World,
     b2MassData = Box2D.Collision.Shapes.b2MassData,
+    b2Shape = Box2D.Collision.Shapes.b2Shape;
     b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
     b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 
-io.sockets.on('connection', function (socket) {
+function buildWorld() {
   var world = new b2World(new b2Vec2(0, 10), true);
   var fixDef = new b2FixtureDef;
       fixDef.density = 1.0;
@@ -23,11 +24,13 @@ io.sockets.on('connection', function (socket) {
   //create ground
   bodyDef.type = b2Body.b2_staticBody;
   fixDef.shape = new b2PolygonShape;
+
   fixDef.shape.SetAsBox(20, 2);
   bodyDef.position.Set(10, 400 / 30 + 1.8);
   world.CreateBody(bodyDef).CreateFixture(fixDef);
   bodyDef.position.Set(10, -1.8);
   world.CreateBody(bodyDef).CreateFixture(fixDef);
+
   fixDef.shape.SetAsBox(2, 14);
   bodyDef.position.Set(-1.8, 13);
   world.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -36,7 +39,7 @@ io.sockets.on('connection', function (socket) {
 
   //create some objects
   bodyDef.type = b2Body.b2_dynamicBody;
-  for(var i = 0; i < 3; ++i) {
+  for(var i = 0; i < 10; ++i) {
     if(Math.random() > 0.5) {
        fixDef.shape = new b2PolygonShape;
        fixDef.shape.SetAsBox(
@@ -50,16 +53,72 @@ io.sockets.on('connection', function (socket) {
     }
     bodyDef.position.x = Math.random() * 10;
     bodyDef.position.y = Math.random() * 10;
+    bodyDef.userData = i.toString();
     world.CreateBody(bodyDef).CreateFixture(fixDef);
   }
+  return world;
+}
+
+function serializeWorld(world) {
+  var data, body, shape;
+  data = {
+    bodies: []
+  };
+  for (var b = world.m_bodyList; b; b = b.m_next) {
+    body = {
+      id: b.m_userData,
+      transform: b.m_xf,
+      shapes: []
+    }
+    for (f = b.GetFixtureList(); f; f = f.m_next) {
+      shape = f.GetShape();
+      switch (shape.m_type) {
+      case b2Shape.e_circleShape:
+        {
+          body.shapes.push({
+            type: 'c',
+            p: shape.m_p,
+            radius: shape.m_radius
+          });
+        }
+        break;
+      case b2Shape.e_polygonShape:
+        {
+          body.shapes.push({
+            type: 'p',
+            vertices: shape.m_vertices
+          });
+        }
+        break;
+      case b2Shape.e_edgeShape:
+        {
+          body.shapes.push({
+            type: 'e',
+            v1: shape.m_v1,
+            v2: shape.m_v2
+          });
+        }
+        break;
+      }
+    }
+    data.bodies.push(body);
+  }
+  return data;
+}
+
+io.sockets.on('connection', function (socket) {
+  var world = buildWorld();
+  socket.emit('world', serializeWorld(world));
 
   setInterval(update, 1000 / 30);
 
   function update() {
-    var data = {bodies:[]};
+    var data = {};
     world.Step(1 / 30, 10, 10);
     for (var b = world.m_bodyList; b; b = b.m_next) {
-      data.bodies.push(b);
+      if (b.m_userData) {
+        data[b.m_userData] = b.m_xf;
+      }
     }
     socket.volatile.emit('update', data);
     world.ClearForces();

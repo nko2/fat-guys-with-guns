@@ -6,15 +6,98 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script>
-      var socket = io.connect('http://localhost:3001');
-      $(function () {
-        socket.on('update', function (data) {
-          console.dir(data);
+      world = null;
+      drawScale = 30;
+      ctx = null;
+      socket = io.connect('http://localhost:3001');
+
+      function mulMV(A, v) {
+        var u = {
+          x: A.col1.x * v.x + A.col2.x * v.y,
+          y: A.col1.y * v.x + A.col2.y * v.y
+        };
+        return u;
+      }
+
+      function mulX(T, v) {
+        var a = mulMV(T.R, v);
+        a.x += T.position.x;
+        a.y += T.position.y;
+        return a;
+      }
+
+      function drawSolidCircle(center, radius, axis) {
+        var cx = center.x * drawScale,
+            cy = center.y * drawScale;
+        ctx.moveTo(0, 0);
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * drawScale, 0, Math.PI * 2, true);
+        ctx.moveTo(cx, cy);
+        ctx.lineTo((center.x + axis.x * radius) * drawScale, (center.y + axis.y * radius) * drawScale);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      function drawSolidPolygon(vertices) {
+        ctx.beginPath();
+        ctx.moveTo(vertices[0].x * drawScale, vertices[0].y * drawScale);
+        for (var i = 1; i < vertices.length; i++) {
+          ctx.lineTo(vertices[i].x * drawScale, vertices[i].y * drawScale);
+        }
+        ctx.lineTo(vertices[0].x * drawScale, vertices[0].y * drawScale);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      };
+
+      function drawShape(T, shape) {
+        if (shape.type === 'c') {
+          var center = mulX(T, shape.p);
+          var radius = shape.radius;
+          var axis = T.R.col1;
+          drawSolidCircle(center, radius, axis);
+        } else if (shape.type === 'p') {
+          var i, vertices = new Array(shape.vertices.length);
+          for (i = 0; i < vertices.length; ++i) {
+            vertices[i] = mulX(T, shape.vertices[i]);
+          }
+          drawSolidPolygon(vertices);
+        }
+      }
+
+      function render () {
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillStyle = 'rgba(102,102,102,1)';
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#000';
+        $.each(world.bodies, function (i, body) {
+          $.each(body.shapes, function (j, shape) {
+            drawShape(body.transform, shape);
+          });
+        });
+      }
+
+      socket.on('world', function (data) {
+        world = data;
+        $(document).ready(function () {
+          var canvas = document.getElementById('canvas');
+          ctx = canvas.getContext('2d');
+          render();
+          socket.on('update', function (data) {
+            $.each(world.bodies, function (i, body) {
+              if (body.id) {
+                body.transform = data[body.id];
+              }
+            });
+            render();
+          });
         });
       });
     </script>
   </head>
   <body>
-    <div id="canvas"></div>
+    <canvas id="canvas" width="600" height="400"></canvas>
   </body>
 </html>
