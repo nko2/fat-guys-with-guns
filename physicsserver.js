@@ -77,7 +77,7 @@ Game.prototype.join = function(socket,type){
     }else if(type == 'controller'){
 	if(this.controllers < 4){
 	    socket.join(this.controller_sockets);
-	    controllers++;
+	    this.controllers++;
 	    return true;
 	}
     }
@@ -87,8 +87,8 @@ Game.prototype.empty = function(){
     return (this.viewers == 0 && this.controllers == 0);
 };
 Game.prototype.remove = function(id){
-    var controller_room = io.sockets.manager.rooms[this.controller_sockets] || [];
-    if(-1 != controller_room.indexOf(id)){
+    var controller_room = io.sockets.manager.rooms['/'+this.controller_sockets] || [];
+    if(-1 != controller_room.indexOf(id+'')){
 	// If this is c1 or c0, the other one wins.
 	if(id == this.c0){
 	    this.c0 = null;
@@ -116,4 +116,5 @@ Game.prototype.begin = function(){
     //Something... Something... Some function to derive new controllers - fortunately we have redis data to make this awesome
     // Then start the sequence of events - tell the two controllers to start - this should probably have a count-down?
     // trigger everyone else to reset, and reset the physics simulation.
+    // Trigger the timeout
 };
