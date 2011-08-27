@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Box2D Demo</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script>
+      var socket = io.connect('http://localhost:3001');
+      $(function () {
+        socket.on('update', function (data) {
+          console.dir(data);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="canvas"></div>
+  </body>
+</html>

@@ -1,5 +1,5 @@
 var Box2D = require('./lib/Box2D.js').Box2D;
-console.log(Box2D);
+var io = require('socket.io').listen(3001);
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2AABB = Box2D.Collision.b2AABB,
@@ -12,7 +12,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
     b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 
-function init() {
+io.sockets.on('connection', function (socket) {
   var world = new b2World(new b2Vec2(0, 10), true);
   var fixDef = new b2FixtureDef;
       fixDef.density = 1.0;
@@ -53,18 +53,16 @@ function init() {
     world.CreateBody(bodyDef).CreateFixture(fixDef);
   }
 
-  setInterval(update, 1000 / 60);
+  setInterval(update, 1000 / 30);
 
   function update() {
-    world.Step(1 / 60, 10, 10);
-    console.warn('STEP');
+    var data = {bodies:[]};
+    world.Step(1 / 30, 10, 10);
     for (var b = world.m_bodyList; b; b = b.m_next) {
-      if (b.GetType() == b2Body.b2_dynamicBody) {
-        console.warn(b.m_xf);
-      }
+      data.bodies.push(b);
     }
+    socket.volatile.emit('update', data);
     world.ClearForces();
   }
-}
+});
 
-init();
