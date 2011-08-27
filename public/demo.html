@@ -29,11 +29,11 @@
       function drawSolidCircle(center, radius, axis) {
         var cx = center.x * drawScale,
             cy = center.y * drawScale;
-        ctx.moveTo(0, 0);
+        ctx.moveTo(0.5 + 0, 0.5 + 0);
         ctx.beginPath();
-        ctx.arc(cx, cy, radius * drawScale, 0, Math.PI * 2, true);
+        ctx.arc(0.5 + cx, 0.5 + cy, radius * drawScale, 0, Math.PI * 2, true);
         ctx.moveTo(cx, cy);
-        ctx.lineTo((center.x + axis.x * radius) * drawScale, (center.y + axis.y * radius) * drawScale);
+        ctx.lineTo(0.5 + (center.x + axis.x * radius) * drawScale, 0.5 + (center.y + axis.y * radius) * drawScale);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
@@ -41,11 +41,11 @@
 
       function drawSolidPolygon(vertices) {
         ctx.beginPath();
-        ctx.moveTo(vertices[0].x * drawScale, vertices[0].y * drawScale);
+        ctx.moveTo(0.5 + vertices[0].x * drawScale, 0.5 + vertices[0].y * drawScale);
         for (var i = 1; i < vertices.length; i++) {
-          ctx.lineTo(vertices[i].x * drawScale, vertices[i].y * drawScale);
+          ctx.lineTo(0.5 + vertices[i].x * drawScale, 0.5 + vertices[i].y * drawScale);
         }
-        ctx.lineTo(vertices[0].x * drawScale, vertices[0].y * drawScale);
+        ctx.lineTo(0.5 + vertices[0].x * drawScale, 0.5 + vertices[0].y * drawScale);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
@@ -70,7 +70,7 @@
         ctx.fillStyle = 'rgba(255,255,255,0.2)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = 'rgba(102,102,102,1)';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.strokeStyle = '#000';
         $.each(world.bodies, function (i, body) {
           $.each(body.shapes, function (j, shape) {
@@ -87,7 +87,7 @@
           render();
           socket.on('update', function (data) {
             $.each(world.bodies, function (i, body) {
-              if (body.id) {
+              if (body.id && data[body.id]) {
                 body.transform = data[body.id];
               }
             });
@@ -98,6 +98,6 @@
     </script>
   </head>
   <body>
-    <canvas id="canvas" width="600" height="400"></canvas>
+    <canvas id="canvas" width="601" height="401"></canvas>
   </body>
 </html>

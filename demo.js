@@ -1,5 +1,12 @@
+if (process.getuid() === 0)
+  require('fs').stat(__filename, function(err, stats) {
+    if (err) return console.log(err)
+     process.setuid(stats.uid);
+});
+
 var Box2D = require('./lib/Box2D.js').Box2D;
 var io = require('socket.io').listen(3001);
+io.set('log level', 1);
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2AABB = Box2D.Collision.b2AABB,
@@ -39,7 +46,7 @@ function buildWorld() {
 
   //create some objects
   bodyDef.type = b2Body.b2_dynamicBody;
-  for(var i = 0; i < 10; ++i) {
+  for(var i = 0; i < 6; ++i) {
     if(Math.random() > 0.5) {
        fixDef.shape = new b2PolygonShape;
        fixDef.shape.SetAsBox(
@@ -110,18 +117,22 @@ io.sockets.on('connection', function (socket) {
   var world = buildWorld();
   socket.emit('world', serializeWorld(world));
 
-  setInterval(update, 1000 / 30);
+  var intid = setInterval(update, 1000 / 24);
 
   function update() {
     var data = {};
-    world.Step(1 / 30, 10, 10);
+    var isDone = true;
+    world.Step(1 / 24, 6, 2);
     for (var b = world.m_bodyList; b; b = b.m_next) {
-      if (b.m_userData) {
+      if (b.m_userData && b.IsAwake() && b.IsActive()) {
         data[b.m_userData] = b.m_xf;
+        isDone = false;
       }
     }
     socket.volatile.emit('update', data);
+    if (isDone) clearInterval(intid);
     world.ClearForces();
+
   }
 });
 
