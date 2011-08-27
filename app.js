@@ -35,5 +35,12 @@ app.get('/', function(req, res){
   });
 });
 
-app.listen(process.env.NODE_ENV === 'production' ? 80 :3000);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
+	// Maybe we shouldn't run as root =)
+	if (process.getuid() === 0)
+	    require('fs').stat(__filename, function(err, stats) {
+		    if (err) return console.log(err)
+				 process.setuid(stats.uid);
+		});
+	console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+    });
