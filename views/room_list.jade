@@ -1,11 +1,10 @@
-div(class="index_header", style="border-bottom: 1px solid #000; margin-bottom: 10px;")
-  div(class="monoton_title float_right")
-    span(class="pad_color") PAD
-    span(class="paddle_color") PADDLE
 div
+    p Welcome: #{user_name}
     div(style="margin-bottom: 5px;") Rooms:
-    div ROOM #1 (Full)
-    div ROOM #2 (Full)
-    div ROOM #3 (Full)
-    div ROOM #4
+    - for(room in room_list) {
+      div
+        span #{room_list[room].name}&nbsp;
+        span Players : #{room_list[room].players.length}&nbsp;
+        span Spectators : #{room_list[room].spectators.length}
+    - };
 div

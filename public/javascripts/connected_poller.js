@@ -5,7 +5,7 @@ $(document).ready(function() {
         var phone_secret = getCookie("phone_secret");
 
         $.ajax({
-            url: "/phone_attached/"+phone_secret,
+            url: "/is_phone_attached/"+phone_secret,
             type: 'get',
             cache: false,
             dataType: 'json',

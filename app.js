@@ -15,19 +15,8 @@ var redis_client = redis.createClient();
 
 redis_client.on("error", function (err) {
     console.log("Redis connection error to " + redis_client.host + ":" + redis_client.port + " - " + err);
-})
-*/
-
-/*redis_client.set("string key", "string val", redis.print);
-redis_client.hset("hash key", "hashtest 1", "some value", redis.print);
-redis_client.hset(["hash key", "hashtest 2", "some other value"], redis.print);
-redis_client.hkeys("hash key", function (err, replies) {
-    console.warn(replies.length + " replies:");
-    replies.forEach(function (reply, i) {
-        console.warn("  z  " + i + ": " + reply);
-    });
-    redis_client.quit();
-});*/
+})*/
+var redis_client = null;
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -48,8 +37,9 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-//require('./controllers/index')(app, redis_client);
-//require('./controllers/phone')(app, redis_client);
+require('./controllers/index')(app, redis_client);
+require('./controllers/phone')(app, redis_client);
+require('./controllers/room')(app, redis_client);
 
 app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
   // Maybe we shouldn't run as root =)

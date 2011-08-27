@@ -8,6 +8,14 @@ a {
 }
 
 .monoton_title { font: 52px "monoton"; }
+.monoton_title_mobile { font: 30px "monoton";}
+.screen_centered_mobile {
+  margin: auto;
+  position: relative;
+  width: 250px;
+}
+
+.aldrich { font: 24px "Aldrich";}
 .float_right { float: right; }
 .pad_color { color: #de5e00; }
 .paddle_color { color: #4f6911; }

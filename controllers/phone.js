@@ -1,11 +1,12 @@
 module.exports = function(app, redis_client) {
     app.get('/phone', function(req, res) {
         res.render('phone_connect', {
+            layout: 'mobile_layout',
             connected : false
         });
     });
 
-    app.get('/phone_attached/:phone_secret', function(req, res) {
+    app.get('/is_phone_attached/:phone_secret', function(req, res) {
         var phone_secret = req.params.phone_secret;
         redis_client.hgetall("phone_secret:"+phone_secret, function(err, data) {
             if (err) {
@@ -26,6 +27,7 @@ module.exports = function(app, redis_client) {
             res.cookie('user_name', data.user_name, { httpOnly: false });
             setConnected(phone_secret, data.user_name);
             res.render('phone_connect', {
+                layout: 'mobile_layout',
                 connected: true,
                 user_name : data.user_name
             });

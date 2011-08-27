@@ -1,7 +1,13 @@
-StringHelper = require('../helpers/string_helper');
+var StringHelper = require('../helpers/string_helper');
+var Util = require('../helpers/util');
 
 module.exports = function(app, redis_client) {
     app.get('/', function(req, res) {
+        if (Util.isMobile(req)) {
+         res.redirect("/phone");
+         return;
+        }
+
         res.render('index', {
         });
     });
@@ -28,19 +34,11 @@ module.exports = function(app, redis_client) {
 
         res.render('home', {
             user_name : user_name,
-            phone_secret : phone_secret
+            phone_secret : phone_secret,
+            javascripts : ["/javascripts/connected_poller.js"]
         });
     });
 
-    app.get('/room_list', function(req, res) {
-        var user_name = req.cookies['user_id'];
-        var phone_secret = req.cookies['phone_secret'];
-
-        res.render('room_list', {
-            user_name : user_name,
-            phone_secret : phone_secret
-        });
-    });
 
     function findUniqueKey(callback) {
         var phone_secret = StringHelper.createRandomWord(7);

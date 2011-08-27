@@ -1,14 +1,12 @@
-div(class="index_header", style="border-bottom: 1px solid #000; margin-bottom: 10px;")
-  div(class="monoton_title float_right")
-    span(class="pad_color") PAD
-    span(class="paddle_color") PADDLE
 div
-    div PadPaddle is a multiplayer game that plays like a cross between volleyball and Pong. Players control their paddle using their touch phone, while the game action takes place on a desktop. And... no worries: PadPaddle is all browser based; no installation required!
-    div
-    div(style="margin-bottom: 5px;")
-      label Enter a name to be known as:
-    form(action="/register", method="post")
-      input(type="text", name="user_name")
-      input(type="submit", value="Go!", class="submit_button")
+  div(class="aldrich")
+    p PadPaddle is a multiplayer game that plays like a cross between volleyball and Pong.
+    p Players control their paddle using their touch phone, while the game action takes place on a desktop.
+    p And... no worries: PadPaddle is all browser based; no installation required!
+  p(style="margin-bottom: 5px;")
+    label Enter a name to be known as:
+  form(action="/register", method="post")
+    input(type="text", name="user_name")
+    input(type="submit", value="Go!", class="submit_button")
 
 

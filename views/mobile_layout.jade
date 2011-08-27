@@ -1,6 +1,7 @@
 !!! 5
 html(lang="en")
   head
+      meta(name = "viewport", content = "width = device-width")
       link(rel="shortcut icon", href="/images/favicon.ico", type="image/x-icon")
       link(rel="icon", href="/images/favicon.ico", type="image/x-icon")
       script(src='http://code.jquery.com/jquery-1.6.1.min.js')
@@ -14,9 +15,4 @@ html(lang="en")
         - });
       - }
   body
-    div(class="index_header", style="border-bottom: 1px solid #000; margin-bottom: 10px;")
-      div(class="monoton_title float_right")
-        span(class="pad_color") PAD
-        span(class="paddle_color") PADDLE
-
     body!= body
