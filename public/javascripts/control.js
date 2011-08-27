@@ -21,7 +21,7 @@ function onError(err){
 
 function tick(){
     if(controllerNumber !== null){
-	controllerSocket.emit('paddle','some data');
+	controllerSocket.volatile.emit('paddle','some data',controllerNumber);
     }
     setTimeout(tick,1000);
 }

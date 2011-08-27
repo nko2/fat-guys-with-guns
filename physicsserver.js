@@ -61,6 +61,7 @@ Game = function(id){
     this.physics = null;
     this.c0 = null;
     this.c1 = null;
+    this.active = false;
     this.viewers = 0;
     this.controllers = 0;
     this.all_sockets = id+'-all';
@@ -76,6 +77,7 @@ Game.prototype.join = function(socket,type){
 	}
     }else if(type == 'controller'){
 	if(this.controllers < 4){
+	    socket.join(this.all_sockets);
 	    socket.join(this.controller_sockets);
 	    this.controllers++;
 	    return true;
@@ -103,18 +105,57 @@ Game.prototype.remove = function(id){
 };
 Game.prototype.end = function(winner){
     // for both controller sockets (if they exist) start ignoring the paddle data
+    this.active = false;
     if(this.c0) io.sockets.socket(this.c0).removeAllListeners('paddle');
     if(this.c1) io.sockets.socket(this.c1).removeAllListeners('paddle');
     winner = [this.c0,this.c1][winner];
     redis.get(redisKeys[winner],function(err,data){
 	    var fail = {};
 	    io.sockets.in(this.all_sockets).emit('win',data || fail);
-	    this.begin();//Start over...
 	});
 };
 Game.prototype.begin = function(){
-    //Something... Something... Some function to derive new controllers - fortunately we have redis data to make this awesome
-    // Then start the sequence of events - tell the two controllers to start - this should probably have a count-down?
-    // trigger everyone else to reset, and reset the physics simulation.
-    // Trigger the timeout
+    var pads = chooseControllers(io.sockets.manager.rooms['/'+this.controller_sockets]);
+    this.c0 = pads[0];
+    this.c1 = pads[1];
+    this.active = true;
+    io.sockets.socket(this.c0).emit('nominate',0);
+    io.sockets.socket(this.c1).emit('nominate',1);
+    io.sockets.in(this.all_sockets).emit('time',15);
+    setTimeout(function(){
+	    if(this.active){
+		// Something to reset the physics goes here
+		io.sockets.in(this.all_sockets).emit('start','new game state');
+		// Start updating the paddle positions. Mocked right now
+		io.sockets.socket(this.c0).on('paddle',function(){console.log('paddle0');});
+		io.sockets.socket(this.c1).on('paddle',function(){console.log('paddle1');});
+		setupPhysics(this);
+	    }
+	},15*1000);
 };
+// Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
+function chooseControllers(set){
+    return set.slice(0,2);
+}
+// Sets up the game's physics loops
+function setupPhysics(game){
+    var loop = function(){
+	// Needs some logic to terminate, however
+	if(game.active){
+	    // Update the physics here
+	    io.sockets.in(this.all_sockets).volatile.emit('update','');
+	    setTimeout(loop,1000);
+	}
+    };
+    loop();
+}
+//This is the server's real main-loop. Checks if games can be started, and then starts them
+function pollForReadyGames(){
+    for(var i in games){
+	i = games[i];
+	if(!i.active && i.controllers > 1)
+	    i.begin();
+    }
+    setTimeout(pollForReadyGames,250);
+}
+pollForReadyGames();
