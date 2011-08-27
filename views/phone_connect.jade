@@ -1,9 +1,14 @@
 div(class="screen_centered")
-	div(class="monoton_title")
-		span(class="pad_color") Pad
-		span(class="paddle_color") Paddle
-	div(class="center")
-		div(style="margin-bottom: 5px;")
-			label Enter the code you see on your computer
-		form(target="phone_connect")
-				input(type="text", name="code")
+  div(class="monoton_title")
+    <span class="pad_color">PAD</span><span class="paddle_color">PADDLE</span>
+  div(class="center")
+    - if (connected) {
+    div(style="margin-bottom: 5px;")
+      span You are connected as #{user_name}
+    - } else {
+    div(style="margin-bottom: 5px;")
+      label Enter the code you see on your computer
+    form(action="phone_connect", method="post")
+        input(type="text", name="phone_secret", style="text-align: center;")
+        input(type="submit", value="Go!", style="width: 50px;")
+    -}

@@ -11,7 +11,7 @@ module.exports = {
 	  for (i=0;i<length/2;i++) {
 	      var randConsonant = consonants[rand(consonants.length)],
 	          randVowel = vowels[rand(vowels.length)];
-	      word += (i===0) ? randConsonant.toUpperCase() : randConsonant;
+	      word += randConsonant;
 	      word += i*2<length-1 ? randVowel : '';
 	  }
 	  return word;

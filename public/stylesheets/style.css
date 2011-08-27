@@ -12,14 +12,9 @@ a {
 .pad_color { color: #de5e00; }
 .paddle_color { color: #4f6911; }
 .screen_centered {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 50%;
-  height: 50%;
   margin: auto;
+  position: relative;
+  width: 400px;
 }
 .center {
   text-align: center;
@@ -34,3 +29,4 @@ input {
 }
 
 .index_header { height: 70px;}
+.secret { font-size: 36px; background: #ddd; border: 1px solid #222; padding: 5px;}

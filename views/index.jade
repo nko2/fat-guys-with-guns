@@ -1,11 +1,11 @@
 div(class="index_header", style="border-bottom: 1px solid #000; margin-bottom: 10px;")
-	div(class="monoton_title float_right")
-		span(class="pad_color") pad
-		span(class="paddle_color") paddle
+  div(class="monoton_title float_right")
+    span(class="pad_color") PAD
+    span(class="paddle_color") PADDLE
 div
-		div(style="margin-bottom: 5px;")
-			label Enter a name to be known as:
-		form(target="/login")
-			input(type="text", name="username")
-			input(type="submit", value="Go!")
+    div(style="margin-bottom: 5px;")
+      label Enter a name to be known as:
+    form(action="/register", method="post")
+      input(type="text", name="user_name")
+      input(type="submit", value="Go!")
 

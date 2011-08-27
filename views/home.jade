@@ -1,0 +1,13 @@
+script(src='/javascripts/connected_poller.js')
+
+div(class="index_header", style="border-bottom: 1px solid #000; margin-bottom: 10px;")
+  div(class="monoton_title float_right")
+    span(class="pad_color") PAD
+    span(class="paddle_color") PADDLE
+div(class="center")
+  div Welcome #{user_name}
+  div(style="padding:15px 0 15px 0") Take out your phone, navigate to
+  div(class="secret") http://localhost:3000/phone
+  div(style="padding:15px 0 15px 0") Enter the following code:
+  div
+    span(class="secret") #{phone_secret}
