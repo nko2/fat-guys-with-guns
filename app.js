@@ -3,7 +3,8 @@
  * Module dependencies.
  */
 
-var express = require('express');
+var express = require('express'),
+    nko     = require('nko')('HZImKIPa/PNedR2z');
 
 var app = module.exports = express.createServer();
 
@@ -29,5 +30,12 @@ app.configure('production', function(){
 require('./controllers/index')(app);
 require('./controllers/phone')(app);
 
-app.listen(3000);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
+	// Maybe we shouldn't run as root =)
+	if (process.getuid() === 0)
+	    require('fs').stat(__filename, function(err, stats) {
+		    if (err) return console.log(err)
+				 process.setuid(stats.uid);
+		});
+	console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+    });
