@@ -9,7 +9,7 @@
       world = null;
       drawScale = 30;
       ctx = null;
-      socket = io.connect('http://localhost:3001');
+      socket = io.connect('http://'+location.hostname+':3001');
 
       function mulMV(A, v) {
         var u = {
