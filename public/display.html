@@ -2,21 +2,48 @@
 <html>
   <head>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/Box2dWeb-2.1.a.3.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/javascripts/paddle.js"></script>
     <script type="text/javascript">
       $(function() {
         var $body = $('body'),
             isDown = false,
             socket = io.connect();
-        
+
+        var world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true),
+            paddle = new Paddle(world);
+
+        // DEBUG DRAW
+        var debugDraw = new Box2D.Dynamics.b2DebugDraw();
+        debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+        debugDraw.SetDrawScale(30);
+        debugDraw.SetFlags(Box2D.Dynamics.b2DebugDraw.e_shapeBit);
+        world.SetDebugDraw(debugDraw);
+
+        setInterval(function() {
+          paddle.onFrame();
+          world.Step(1/30, 10, 10);
+          world.DrawDebugData();
+        }, 1/30);
+
+        // Socket
         socket.emit('subscribe', 'view');
         socket.on('pts', function (points) {
-          $('body').html($.map(points, function(pt) { return pt.x + ',' + pt.y; }).join(' -> '));
+          $('#points').html(
+            points ? $.map(points, function(pt) { return pt.x + ',' + pt.y; }).join(' -> ') : 'NO TOUCH'
+          );
+
+          paddle.setTouchPoints(points);
         });
       });
 
     </script>
   </head>
   <body>
+    <canvas id="canvas" width="600" height="400" style="background-color:#333333;" ></canvas>
+    <div id="points">&nbsp;</div>
+    <div id="rotation">&nbsp;</div>
+    <div id="rotation_speed">&nbsp;</div>
   </body>
 </html>
