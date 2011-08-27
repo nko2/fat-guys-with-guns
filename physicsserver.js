@@ -61,7 +61,7 @@ Game = function(id){
     this.physics = null;
     this.c0 = null;
     this.c1 = null;
-    this.active = false;
+    this.running = false;
     this.viewers = 0;
     this.controllers = 0;
     this.all_sockets = id+'-all';
@@ -105,7 +105,7 @@ Game.prototype.remove = function(id){
 };
 Game.prototype.end = function(winner){
     // for both controller sockets (if they exist) start ignoring the paddle data
-    this.active = false;
+    this.running = false;
     if(this.c0) io.sockets.socket(this.c0).removeAllListeners('paddle');
     if(this.c1) io.sockets.socket(this.c1).removeAllListeners('paddle');
     winner = [this.c0,this.c1][winner];
@@ -118,20 +118,24 @@ Game.prototype.begin = function(){
     var pads = chooseControllers(io.sockets.manager.rooms['/'+this.controller_sockets]);
     this.c0 = pads[0];
     this.c1 = pads[1];
-    this.active = true;
+    this.running = true;
     io.sockets.socket(this.c0).emit('nominate',0);
     io.sockets.socket(this.c1).emit('nominate',1);
     io.sockets.in(this.all_sockets).emit('time',15);
-    setTimeout(function(){
-	    if(this.active){
-		// Something to reset the physics goes here
-		io.sockets.in(this.all_sockets).emit('start','new game state');
-		// Start updating the paddle positions. Mocked right now
-		io.sockets.socket(this.c0).on('paddle',function(){console.log('paddle0');});
-		io.sockets.socket(this.c1).on('paddle',function(){console.log('paddle1');});
-		setupPhysics(this);
-	    }
-	},15*1000);
+    (function(game){
+	setTimeout(function(){
+		if(game.running){
+		    // Something to reset the physics goes here
+		    io.sockets.in(game.all_sockets).emit('start','new game state');
+		    // Start updating the paddle positions. Mocked right now
+		    io.sockets.socket(game.c0).on('controller',function(dat,num){
+			});
+		    io.sockets.socket(game.c1).on('controller',function(dat,num){    
+			});
+		    setupPhysics(game);
+		}
+	    },15*1000);
+    })(this);
 };
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
 function chooseControllers(set){
@@ -141,9 +145,9 @@ function chooseControllers(set){
 function setupPhysics(game){
     var loop = function(){
 	// Needs some logic to terminate, however
-	if(game.active){
+	if(game.running){
 	    // Update the physics here
-	    io.sockets.in(this.all_sockets).volatile.emit('update','');
+	    io.sockets.in(game.all_sockets).volatile.emit('update','');
 	    setTimeout(loop,1000);
 	}
     };
@@ -153,7 +157,7 @@ function setupPhysics(game){
 function pollForReadyGames(){
     for(var i in games){
 	i = games[i];
-	if(!i.active && i.controllers > 1)
+	if(!i.running && i.controllers > 1)
 	    i.begin();
     }
     setTimeout(pollForReadyGames,250);
