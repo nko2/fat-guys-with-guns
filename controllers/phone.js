@@ -23,14 +23,18 @@ module.exports = function(app, redis_client) {
             if (err) {
                 console.warn(err);
             }
-            res.cookie('phone_secret', phone_secret, { httpOnly: false });
-            res.cookie('user_name', data.user_name, { httpOnly: false });
-            setConnected(phone_secret, data.user_name);
-            res.render('phone_connect', {
-                layout: 'mobile_layout',
-                connected: true,
-                user_name : data.user_name
-            });
+            if (data.user_name) {
+                res.cookie('phone_secret', phone_secret, { httpOnly: false });
+                res.cookie('user_name', data.user_name, { httpOnly: false });
+                setConnected(phone_secret, data.user_name);
+                res.render('phone_connect', {
+                    layout: 'mobile_layout',
+                    connected: true,
+                    user_name : data.user_name
+                });
+            }else {
+                res.redirect('/phone_connect');
+            }
         });
     });
 

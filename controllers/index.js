@@ -17,7 +17,9 @@ module.exports = function(app, redis_client) {
 
         findUniqueKey(function(phone_secret) {
             redis_client.hmset("phone_secret:"+phone_secret, {
-                "user_name" : user_name
+                "user_name" : user_name,
+                "games_played" : 0,
+                "last_played_timestamp" : new Date()
             });
             // Expire ids so we can reuse them later
             redis_client.expire("phone_secret:"+phone_secret, 86400); // One Day

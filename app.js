@@ -10,11 +10,10 @@ var express = require('express'),
 var app = module.exports = express.createServer();
 
 // Configuration
-/*
+
 var redis_client = redis.createClient();
     console.log("Redis connection error to " + redis_client.host + ":" + redis_client.port + " - " + err);
-})*/
-var redis_client = null;
+})
 
 
 app.configure(function(){

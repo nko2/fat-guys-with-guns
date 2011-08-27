@@ -4,11 +4,10 @@ div
     p Players control their paddle using their touch phone, while the game action takes place on a desktop.
     p And... no worries: PadPaddle is all browser based; no installation required!
   p(style="margin-bottom: 5px;")
-  <!--  label Enter a name to be known as: -->
-  <!-- form(action="/register", method="post") -->
-  <!--  input(type="text", name="user_name") -->
-  <!--  input(type="submit", value="Go!", class="submit_button") -->
-
+    label Enter a name to be known as:
+    form(action="/register", method="post", onsubmit="return $('#user_name').val().length > 0")
+      input(type="text", name="user_name", id="user_name")
+      input(type="submit", value="Go!", class="submit_button")
   div
     div Run entirely on server.
     a(href="/demo.html", class="monoton_title_mobile") DEMO!
