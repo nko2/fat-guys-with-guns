@@ -1,6 +1,10 @@
-!!!
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+!!! 5
+html(lang="en")
+	head
+			link(rel="shortcut icon", href="/images/favicon.ico", type="image/x-icon")
+			link(rel="icon", href="/images/favicon.ico", type="image/x-icon")
+			script(src='http://code.jquery.com/jquery-1.6.1.min.js')
+			link(rel='stylesheet', href='/stylesheets/style.css')
+			link(href='http://fonts.googleapis.com/css?family=Monoton', rel='stylesheet',type='text/css')
+	body
+		body!= body

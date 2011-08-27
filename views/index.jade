@@ -1,2 +1,11 @@
-h1= title
-p Welcome to #{title}
+div(class="index_header", style="border-bottom: 1px solid #000; margin-bottom: 10px;")
+	div(class="monoton_title float_right")
+		span(class="pad_color") Pad
+		span(class="paddle_color") Paddle
+div
+		div(style="margin-bottom: 5px;")
+			label Enter a name to be known as:
+		form(target="/login")
+			input(type="text", name="username")
+			input(type="submit", value="Go!")
+
