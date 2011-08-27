@@ -30,3 +30,4 @@ input {
 
 .index_header { height: 70px;}
 .secret { font-size: 36px; background: #ddd; border: 1px solid #222; padding: 5px;}
+.submit_button { width: 50px;}
