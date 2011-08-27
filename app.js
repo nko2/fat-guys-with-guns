@@ -4,7 +4,7 @@
  */
 
 var express = require('express'),
-    sio      = require('socket.io'),
+    sio     = require('socket.io'),
     nko     = require('nko')('HZImKIPa/PNedR2z');
 
 var app = module.exports = express.createServer();
