@@ -1,20 +1,22 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express'),
-	redis   = require('redis'),
+    redis   = require('redis'),
+    sio     = require('socket.io'),
     nko     = require('nko')('HZImKIPa/PNedR2z');
 
 var app = module.exports = express.createServer();
 
 // Configuration
+/*
 var redis_client = redis.createClient();
 
 redis_client.on("error", function (err) {
-    console.log("Redis connection error to " + client.host + ":" + client.port + " - " + err);
+    console.log("Redis connection error to " + redis_client.host + ":" + redis_client.port + " - " + err);
 })
+*/
 
 /*redis_client.set("string key", "string val", redis.print);
 redis_client.hset("hash key", "hashtest 1", "some value", redis.print);
@@ -46,15 +48,33 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-require('./controllers/index')(app, redis_client);
-require('./controllers/phone')(app, redis_client);
+//require('./controllers/index')(app, redis_client);
+//require('./controllers/phone')(app, redis_client);
 
 app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
-	// Maybe we shouldn't run as root =)
-	if (process.getuid() === 0)
-	    require('fs').stat(__filename, function(err, stats) {
-		    if (err) return console.log(err)
-				 process.setuid(stats.uid);
-		});
-	console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+  // Maybe we shouldn't run as root =)
+  if (process.getuid() === 0) {
+    require('fs').stat(__filename, function(err, stats) {
+      if (err) {
+        return console.log(err);
+      }
+      process.setuid(stats.uid);
     });
+  }
+  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+});
+
+var io = sio.listen(app);
+io.sockets.on('connection', function (socket) {
+  socket.on('subscribe', function(type) {
+    if(type == 'controller') {
+      socket.on('pts', function(points) {
+        io.sockets.in('views').volatile.emit('pts', points);
+      });
+    }
+    else if(type == 'view') {
+      socket.join('views');
+    }
+  });
+});
+
