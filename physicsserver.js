@@ -11,8 +11,7 @@ var io = require('socket.io').listen(port);
 
 var games = {},
     gameBySocketId = {},
-    gamesLeft = 4;//Random guess - can we simulate 4 games per socket
-
+    gamesLeft = 4;//Random guess - can we simulate 4 games per socket?
 io.sockets.on('connection',function(socket){
 	socket.on('subscribe',function(type,gameId){
 		var room = games[gameId];
@@ -21,7 +20,6 @@ io.sockets.on('connection',function(socket){
 			games[gameId] = room = new Game(gameId);
 			gamesLeft--;
 		    }else{
-			console.log("server can't take it anymore!");
 			socket.emit('error',"This game room is full");
 		    //This message is slightly misleading, but should trigger the same failure path in the client
 		    }
@@ -29,9 +27,8 @@ io.sockets.on('connection',function(socket){
 		if(room)
 		    if(room.join(socket,type)){
 			gameBySocketId[socket.id] = gameId;
-			//Probably want to send data here
+			//Probably want to send current world data here
 		    }else{
-			console.log("game is full");
 			socket.emit('error',"This game room is full");			
 		    }
 	    });
@@ -41,11 +38,9 @@ io.sockets.on('connection',function(socket){
 		    if(game=games[gameId]){
 			game.remove(socket.id);
 			if(game.empty()){
-			    console.log("Deleting game");
 			    delete game[gameId];
 			    gamesLeft++;
-			}
-			
+			}			
 		    }
 		    delete gameBySocketId[socket.id];
 		}		
@@ -53,19 +48,41 @@ io.sockets.on('connection',function(socket){
     });
 
 Game = function(id){
-    this.left = 4;
+    this.gameId = id;
+    //Initialize a new physics object here
+    this.physics = null;
+    this.viewers = 0;
+    this.controllers = 0;
+
+    this.all_sockets = id+'-all';
+    this.controller_sockets = id+'-control';
 };
 Game.prototype.join = function(socket,type){
-    if(this.left == 0){
-	return false;
-    }else{
-	this.left--;
-	return true;
+    if(type == 'viewer'){
+	//Probably can manage 4 viewers and 4 controllers?
+	if(this.viewers < 4){
+	    socket.join(this.all_sockets);
+	    this.viewers++;
+	    return true;
+	}
+    }else if(type == 'controller'){
+	if(this.controllers < 4){
+	    socket.join(this.controller_sockets);
+	    controllers++;
+	    return true;
+	}
     }
+    return false;
 };
 Game.prototype.empty = function(){
-    return (this.left == 4);
+    return (this.viewers == 0 && this.controllers == 0);
 };
 Game.prototype.remove = function(id){
-    this.left++;
+    var controller_room = io.sockets.manager.rooms[this.controller_sockets] || [];
+    if(-1 != controller_room.indexOf(id))
+	this.controllers--;
+    else
+	this.viewers--;
 };
+
+
