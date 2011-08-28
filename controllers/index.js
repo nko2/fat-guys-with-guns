@@ -20,8 +20,8 @@ module.exports = function(app, redis_client) {
         findUniqueKey(function(phone_secret) {
             Util.setRedisNewUserData(redis_client, phone_secret, user_name);
 
-            res.cookie('user_id', user_name, { httpOnly: false });
-            res.cookie('phone_secret', phone_secret, { httpOnly: false });
+            res.cookie('user_id', user_name, {  maxAge: 90000000  });
+            res.cookie('phone_secret', phone_secret, {  maxAge: 90000000  });
             res.redirect('/home');
         });
     });

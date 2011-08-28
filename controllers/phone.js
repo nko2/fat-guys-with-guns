@@ -69,8 +69,8 @@ module.exports = function(app, redis_client) {
         var phone_secret = req.body.phone_secret;
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
             if (data.user_name) {
-                res.cookie('phone_secret', phone_secret, { httpOnly: false });
-                res.cookie('user_name', data.user_name, { httpOnly: false });
+                res.cookie('phone_secret', phone_secret, { maxAge: 90000000 });
+                res.cookie('user_name', data.user_name, { maxAge: 90000000  });
                 Util.setRedisUserData(redis_client, phone_secret, { is_connected: true }); // Set connected
                 res.render('phone_connect', {
                     layout: 'mobile_layout',
