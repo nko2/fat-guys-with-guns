@@ -1,3 +1,5 @@
+var Box2D = require('./public/javascripts/Box2D.min.js').Box2D;
+
 function GameLogic(gameDef) {
   this.gameDef = gameDef;
   this.world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true);

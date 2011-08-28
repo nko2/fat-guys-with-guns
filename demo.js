@@ -4,7 +4,7 @@ if (process.getuid() === 0)
      process.setuid(stats.uid);
 });
 
-var Box2D = require('./lib/Box2D.js').Box2D;
+var Box2D = require('./public/javascripts/Box2D.min.js').Box2D;
 var io = require('socket.io').listen(3001);
 io.set('log level', 1);
 
