@@ -39,10 +39,14 @@ io.sockets.on('connection',function(socket){
         socket.on('disconnect',function(){
 		var g = gameBySocketId[socket.id];
 		if(g.host.id == socket.id){
-		    g.c0.emit('disconnect');
-		    g.c1.emit('disconnect');
-		    delete gameBySocketId[g.c0.id];
-		    delete gameBySocketId[g.c1.id];
+		    if(g.c0){
+			g.c0.emit('disconnect');
+			delete gameBySocketId[g.c0.id];
+		    }
+		    if(g.c1){
+			g.c1.emit('disconnect');
+			delete gameBySocketId[g.c1.id];
+		    }
 		    delete gameBySocketId[g.host.id];
 		    delete games[g.gid];
 		}else if(g.c0.id == socket.id){
