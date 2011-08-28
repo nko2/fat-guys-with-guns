@@ -1,13 +1,103 @@
 !!! 5
 html(lang="en")
  head
-     script(src="http://code.jquery.com/jquery-1.6.1.min.js")
-     script(src="/javascripts/control.js")
-     script(src="/socket.io/socket.io.js")
-     script(type="text/javascript")
-        var room_id = "#{room_id}";
-        var phone_secret = "#{phone_secret}";
-        var port = "#{port}";
-        var socket = connectToRoom("http://localhost:"+port, room_id , phone_secret);
+  style(type="text/css")
+    html { height:100%; }
+    body { height:100%; margin:0; padding:0; background-color: #c00; user-select:none; text-align:center; }
+    body.down { background-color:#0c0; }
+  script(src="http://code.jquery.com/jquery-1.6.2.min.js")
+  script(src="/javascripts/control.js")
+  script(src="/socket.io/socket.io.js")
+  script(type="text/javascript")
+    var room_id = "#{room_id}";
+    var phone_secret = "#{phone_secret}";
+    var port = "#{port}";
+    var socket = connectToRoom("http://localhost:"+port, room_id , phone_secret);
+
+    $(function() {
+      var $body = $('body'),
+        width = $body.width(),
+        isDown = false,
+        pt1 = { x:null, y:null },
+        pt2 = { x:null, y:null },
+        ptTmp = null,
+        isEmitPending = false,
+        ctx = document.getElementById('canvas').getContext('2d');
+
+      ctx.canvas.width = $body.width();
+      ctx.canvas.height = $body.height();
+      ctx.lineWidth = 20;
+      ctx.lineCap = 'round';
+
+      $body.bind('touchstart', touchchange);
+      $body.bind('touchmove', touchmove);
+      $body.bind('touchend', touchchange);
+
+      function touchchange(e) {
+        e.preventDefault();
+        var wasDown = isDown;
+        isDown = e.originalEvent.targetTouches.length == 2;
+
+        if(isDown) {
+          $body.addClass("down");
+        }
+        else {
+          $body.removeClass("down");
+        }
+
+        if(isDown) {
+          exportTouches(e, true);
+        }
+        else if(wasDown) {
+          exportNull(e);
+        }
+      }
+
+      function touchmove(e) {
+        e.preventDefault();
+        if(isDown) {
+          exportTouches(e, false);
+        }
+      }
+
+      function exportTouches(e, immediate) {
+        var touches = e.originalEvent.targetTouches;
+        pt1.x = touches[0].pageX / width;
+        pt1.y = touches[0].pageY / width;
+        pt2.x = touches[1].pageX / width;
+        pt2.y = touches[1].pageY / width;
+
+        ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(touches[0].pageX, touches[0].pageY);
+        ctx.lineTo(touches[1].pageX, touches[1].pageY);
+        ctx.stroke();
+
+        if(immediate) {
+          emitNow();
+        }
+        else {
+          isEmitPending = true;
+        }
+      }
+
+      function exportNull(e) {
+        // $body.html('NO TOUCH');
+        socket.emit('pts', 0, null);
+        isEmitPending = false;
+      }
+
+      function emitNow() {
+        /*$body.html(
+          $.map([pt1, pt2], function(pt) {
+            return '<div>' + pt.x + ', ' + pt.y + '</div>';
+          }).join('')
+        );*/
+
+        isEmitPending = false;
+        socket.emit('pts', 0, [pt1, pt2]);
+      };
+
+    });
  body
-  div Booyah
+  canvas(id="canvas")
