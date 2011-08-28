@@ -12,7 +12,7 @@ function GameView(gameDef, $container) {
   $foreground.width(gameDef.courtWidth);
   $foreground.height(gameDef.courtHeight);
 
-  new DiscoWall(gameDef, $disco);
+  var disco = new DiscoWall(gameDef, $disco);
 
   this.drawState = function(state) {
     state.paddles.forEach( function(paddle, i) {
@@ -70,6 +70,7 @@ function GameView(gameDef, $container) {
     });
     
     if(state.event) {
+      disco.makeItFun(1);
       $.each(state.event, function(i, event) {
         if(event.score && event.score.length == 2) {
           $score0.text(event.score[0]);

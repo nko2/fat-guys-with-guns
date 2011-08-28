@@ -94,7 +94,7 @@ function DiscoWall(gameDef, $container) {
   };
   
   this.dim = function(targetIntensity) {
-    targetIntensity = targetIntensity == null ? 0.5 : targetIntensity;
+    targetIntensity = targetIntensity == null ? 0.35 : targetIntensity;
     if(intervalId != null) {
       return;
     }
