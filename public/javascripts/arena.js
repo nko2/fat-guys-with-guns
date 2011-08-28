@@ -1,7 +1,9 @@
+var Box2D = require('./Box2D.min.js').Box2D;
+
 function Arena(gameDef, world) {
   this.gameDef = gameDef;
   this.world = world;
-  
+
   var fixDef = new Box2D.Dynamics.b2FixtureDef, bodyDef = new Box2D.Dynamics.b2BodyDef;
   bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
   fixDef.density = 1.0;
@@ -63,3 +65,4 @@ function Arena(gameDef, world) {
     this.world.CreateBody(bodyDef).CreateFixture(fixDef);
   }
 }
+exports.Arena = Arena

@@ -1,7 +1,9 @@
 var Box2D = require('./Box2D.min.js').Box2D;
+var GameState = require('./game_state.js').GameState;
+
 function Ball(world, gameDef) {
   this.gameDef = gameDef;
-  
+
   var bodyDef = new Box2D.Dynamics.b2BodyDef();
   bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
   bodyDef.bullet = true;

@@ -122,23 +122,23 @@ $(function() {
   }
 
   function exportNull(e) {
-    if (controllerSocket !== null && controllerNum !== null) {
+    if (controllerSocket !== null && controllerNumber !== null) {
       controllerSocket.emit('paddle', null);
       isEmitPending = false;
     }
   }
 
   function emitNow() {
-    if (controllerSocket !== null && controllerNum !== null) {
+    if (controllerSocket !== null && controllerNumber !== null) {
       controllerSocket.emit('paddle', [pt1, pt2]);
       isEmitPending = false;
     }
   }
 
   function emitDbl() {
-    if (controllerSocket !== null && controllerNum !== null) {
+    if (controllerSocket !== null && controllerNumber !== null) {
       controllerSocket.emit('dbl');
     }
   }
-}
+});
 
