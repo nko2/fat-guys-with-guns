@@ -133,11 +133,11 @@ Game.prototype.begin = function(){
 			if(game.running){
 			    game.physics.reset();
 			    io.sockets.in(game.all_sockets).emit('start','new game state');
-			    io.sockets.socket(game.c0).on('controller',function(dat,num){
-				    game.physics.setPaddle(0,dat);
+			    io.sockets.socket(game.c0).on('controller',function(dat){
+				    game.physics.setTouchPoints(0,dat);
 				});
-			    io.sockets.socket(game.c1).on('controller',function(dat,num){    
-				    game.physics.setPaddle(1,dat);
+			    io.sockets.socket(game.c1).on('controller',function(dat){    
+				    game.physics.setTouchPoints(1,dat);
 				});
 			    setupPhysics(game);
 			}
@@ -189,25 +189,23 @@ function setupPhysics(game){
     loop();
 }
 // Update the game room data on redis every n seconds.
-function updateRedis(){
-    var rooms = [];
-    for(var i in games){
-	rooms.push(games[i].redisRecord());
-    }
-    redis.mset('server-'+serverNumber,JSON.stringify(rooms),function(err,_){
-	    if(err)
-		console.log("Redis-error:"+err);
-	});
-    setTimeout(updateRedis,5*1000);
-}
-updateRedis();
+setInterval(function(){
+	var rooms = [];
+	for(var i in games){
+	    rooms.push(games[i].redisRecord());
+	}
+	redis.mset('server-'+serverNumber,JSON.stringify(rooms),function(err,_){
+		if(err)
+		    console.log("Redis-error:"+err);
+	    });	
+    },5000);
 //This is the server's real main-loop. Checks if games can be started, and then starts them
-function pollForReadyGames(){
-    for(var i in games){
-	i = games[i];
-	if(!i.running && i.controllers > 1)
-	    i.begin();
-    }
-    setTimeout(pollForReadyGames,250);
-}
-pollForReadyGames();
+setInterval(function(){
+	for(var i in games){
+	    i = games[i];
+	    if(!i.running && i.controllers > 1)
+		i.begin();
+	}
+    },250);
+
+
