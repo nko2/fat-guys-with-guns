@@ -29,7 +29,7 @@ module.exports = function(app, redis_client) {
 
     });
 
-    app.get('/room/:room_id/:user_action', function(req, res) {
+    app.get('/room_for_browser/:room_id/:user_action', function(req, res) {
         var room_id = req.params.room_id;
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
@@ -42,7 +42,7 @@ module.exports = function(app, redis_client) {
                 Util.setRedisUserData(redis_client, phone_secret, { room_name : room_data.name, port : room_data.port});
             }
 
-            res.render('room', {
+            res.render('room_for_browser', {
                 layout : false,
                 room_id : room_id,
                 user_name : user_name,

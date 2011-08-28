@@ -20,7 +20,7 @@ module.exports = function(app, redis_client) {
         var phone_secret = req.params.phone_secret;
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
             if (data && data.room_name) {
-                res.json({ redirect : "/phone_stub/" + data.room_name + "/" + data.port.toString()  });
+                res.json({ redirect : "/room_for_mobile/" + data.room_name + "/" + data.port.toString()  });
             } else {
                 res.json({ "wait" : true });
             }
@@ -45,7 +45,7 @@ module.exports = function(app, redis_client) {
 
     });
 
-    app.get('/phone_stub/:room_id/:port_id', function(req, res) {
+    app.get('/room_for_mobile/:room_id/:port_id', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
         var room_id = req.params.room_id;
@@ -56,7 +56,7 @@ module.exports = function(app, redis_client) {
             return;
         }
 
-        res.render('phone_stub', {
+        res.render('room_for_mobile', {
             layout: false,
             phone_secret : phone_secret,
             room_id : room_id,
