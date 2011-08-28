@@ -3,10 +3,10 @@ function GameLogic(gameDef) {
   this.world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true);
   
   this.buildStaticBodies();
-  this.ball = new Ball(this.world, 0.2);
+  this.ball = new Ball(this.world, 0.4);
   this.paddles = [
-    new Paddle(this.world, 1, .1),
-    new Paddle(this.world, 1, .1)
+    new Paddle(this.world, 1.4, .15),
+    new Paddle(this.world, 1.4, .15)
   ];
   
   this.reset();

@@ -71,7 +71,7 @@
           }
 */
 
-          if(immediate) {
+          // if(immediate) {
             $body.html(
               $.map([pt1, pt2], function(pt) {
                 return '<div>' + pt.x + ', ' + pt.y + '</div>';
@@ -80,10 +80,10 @@
           
             socket.emit('pts', ctrlId, [pt1, pt2]);
             isEmitPending = false;
-          }
-          else {
-            isEmitPending = true;
-          }
+          // }
+          // else {
+          //   isEmitPending = true;
+          // }
         }
 
         function exportNull(e) {

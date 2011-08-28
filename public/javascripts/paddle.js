@@ -20,7 +20,7 @@ Paddle = function(world, length, thickness) {
 Paddle.dRotationMax = 5 * Math.PI / 180;
 Paddle.dPositionMax = .5;
 Paddle.dTouchFactor = 20;
-Paddle.fpsFactor = .9;
+Paddle.fpsFactor = .7;
 
 Paddle.prototype.getState = function() {
   var position = this.body.GetPosition();
