@@ -127,11 +127,7 @@ Game.prototype.begin = function(){
 			    io.sockets.socket(game.c0).on('paddle',function(dat){
 				    game.physics.setTouchPoints(0,dat);
 				});
-<<<<<<< HEAD
-			    io.sockets.socket(game.c1).on('controller',function(dat){
-=======
 			    io.sockets.socket(game.c1).on('paddle',function(dat){    
->>>>>>> trying to hook up draw
 				    game.physics.setTouchPoints(1,dat);
 				});
 			    setupPhysics(game);
