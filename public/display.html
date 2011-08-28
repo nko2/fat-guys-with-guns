@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/javascripts/paddle.js"></script>
     <script type="text/javascript" src="/javascripts/ball.js"></script>
     <script type="text/javascript" src="/javascripts/game_logic.js"></script>
+    <script type="text/javascript" src="/javascripts/game_view.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
 
@@ -55,7 +56,8 @@
 
         // buildStaticBodies(g, world);
         
-        var gameLogic = new GameLogic(g);
+        var gameLogic = new GameLogic(g),
+            gameView = new GameView();
 
         // DEBUG DRAW
         var debugDraw = new Box2D.Dynamics.b2DebugDraw();
