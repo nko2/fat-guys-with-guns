@@ -43,6 +43,7 @@ module.exports = function(app, redis_client) {
         id : practice_id
       });
     }else {
+      Util.setRedisUserData(redis_client, phone_secret, { room_name : "practice:"+practice_id });
       res.render('practice_room_for_browser', {
         layout : false,
         id : practice_id

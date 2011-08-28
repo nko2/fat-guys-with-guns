@@ -20,7 +20,17 @@ module.exports = function(app, redis_client) {
         var phone_secret = req.params.phone_secret;
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
             if (data && data.room_name) {
-                res.json({ redirect : "/room_for_mobile/" + data.room_name + "/" + data.port.toString()  });
+                if (data.room_name.split(":").length > 1) {
+                  var action = data.room_name.split(":")[0];
+                  if (action === "practice") {
+                    var place = data.room_name.split(":")[1];
+                    res.json({ redirect : "/practice/" + place });
+                  }else {
+                    console.warn("Directing to something other than practice");
+                  }
+                }else {
+                  res.json({ redirect : "/room_for_mobile/" + data.room_name + "/" + data.port.toString()  });
+                }
             } else {
                 res.json({ "wait" : true });
             }
