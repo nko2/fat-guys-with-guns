@@ -1,4 +1,4 @@
-var Box2D = require('./public/javascripts/Box2D.min.js').Box2D;
+var Box2D = require('./Box2D.min.js').Box2D;
 
 function GameLogic(gameDef) {
   this.gameDef = gameDef;
@@ -34,6 +34,10 @@ GameLogic.prototype.step = function(t) {
   this.world.DrawDebugData();
   
   return this.getState();
+};
+
+GameLogic.prototype.over = function(){
+    return false;
 };
 
 GameLogic.prototype.reset = function() {
