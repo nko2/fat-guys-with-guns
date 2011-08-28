@@ -156,7 +156,7 @@ Game.prototype.redisRecord = function(){
 };
 
 for(var i = 0;i<gamesPerProcess;i++){
-    games[i] = new Game(i+gamesPerProcess*serverNumber);
+    games[i.toString()] = new Game((i+gamesPerProcess*serverNumber).toString());
 }
 
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
