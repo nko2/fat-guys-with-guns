@@ -30,8 +30,8 @@ function tick(){
     setTimeout(tick,1000);
 }
 tick();
-function connectToRoom(server,room,redis){
-    var socket = io.connect(server);
+function connectToRoom(port,room,redis){
+    var socket = io.connect(['http://',document.domain,':',port].join(''));
     socket.emit('subscribe','controller',room,redis);
     socket.on('error',onError);
     socket.on('win',onGameOver);
