@@ -32,7 +32,7 @@ io.sockets.on('connection',function(socket){
 		    if(room.join(socket,type)){
 			gameBySocketId[socket.id] = gameId;
 			redisKeys[socket.id] = redisKey;
-			socket.emit('state',room.physics.getState());
+			socket.emit('update',room.physics.getState());
 		    }else{
 			socket.emit('error',"This game room is full");
 		    }
@@ -123,11 +123,15 @@ Game.prototype.begin = function(){
 		setTimeout(function(){
 			if(game.running){
 			    game.physics.reset();
-			    io.sockets.in(game.all_sockets).emit('start','new game state');
-			    io.sockets.socket(game.c0).on('controller',function(dat){
+			    io.sockets.in(game.all_sockets).emit('start',game.physics.getState());
+			    io.sockets.socket(game.c0).on('paddle',function(dat){
 				    game.physics.setTouchPoints(0,dat);
 				});
+<<<<<<< HEAD
 			    io.sockets.socket(game.c1).on('controller',function(dat){
+=======
+			    io.sockets.socket(game.c1).on('paddle',function(dat){    
+>>>>>>> trying to hook up draw
 				    game.physics.setTouchPoints(1,dat);
 				});
 			    setupPhysics(game);
@@ -177,7 +181,7 @@ function setupPhysics(game){
 	    game.end();
 	if(game.running){
 	    // Update the physics here
-	    var state = game.physics.step(1/300);
+	    var state = game.physics.step(1/30);
 	    io.sockets.in(game.all_sockets).volatile.emit('update',state);
 	    setTimeout(loop,1/30)
 	}
@@ -189,10 +193,8 @@ setInterval(function(){
 	var rooms = {};
 	for(var i in games){
 	    i = games[i];
-
 	    rooms[i.gameId] = JSON.stringify(i.redisRecord());
 	}
-	console.log(rooms);
 	redis.hmset('rooms',rooms,function(err,_){
 		if(err)
 		    console.log('Redis-error:'+err);

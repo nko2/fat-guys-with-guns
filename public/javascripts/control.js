@@ -25,7 +25,8 @@ function onState(currentState){
 
 function tick(){
     if(controllerNumber !== null){
-	controllerSocket.emit('controller','some data',controllerNumber);
+	var r = [{x:Math.random(),y:Math.random()},{x:Math.random(),y:Math.random()}];
+	controllerSocket.emit('paddle',r);
     }
     setTimeout(tick,1000);
 }

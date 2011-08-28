@@ -2,11 +2,7 @@ function GameView(gameDef, $container) {
   var $foreground = $container.find('.foreground');
       $paddles = [],
       $ball = null;
-      
-  this.setState = function(state) {
-    this.drawState(state);
-  };
-  
+        
   this.drawState = function(state) {
     state.paddles.forEach( function(paddle, i) {
       var $paddle = $paddles[i];
