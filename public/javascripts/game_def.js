@@ -26,5 +26,6 @@ function GameDef(tileSize, netWidth, scale) {
   this.aboveNet = aboveNet;
   this.net = net;
   this.playerTwo = playerTwo;
+  this.scale = scale;
 }
 exports.GameDef = new GameDef(100, 10, 30);

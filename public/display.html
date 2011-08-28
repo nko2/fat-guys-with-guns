@@ -8,16 +8,65 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/javascripts/paddle.js"></script>
     <script type="text/javascript">
+
+
+      function drawAABB(ctx, aabb, color) {
+        ctx.beginPath();
+        ctx.rect(aabb.x, aabb.y, aabb.width, aabb.height);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+
       function debugGameDef(g) {
-        var bg = document.getElementById('bg'),
-            bgCtx = bg.getContext("2d");
-        bg.width = g.courtWidth;
-        bg.height = g.courtHeight;
-        bgCtx.lineWidth = 2;
-        bgCtx.arc(g.playerOne.right, g.court.bottom, g.radius, Math.PI, 1.5 * Math.PI, false);
-        bgCtx.stroke();
-        bgCtx.arc(g.playerTwo.left, g.court.bottom, g.radius, 1.5 * Math.PI, 0, false);
-        bgCtx.stroke();
+        var canvas = document.getElementById('bg'),
+            ctx = canvas.getContext("2d");
+        canvas.width = g.courtWidth;
+        canvas.height = g.courtHeight;
+
+        drawAABB(ctx, g.playerOne, 'red');
+        drawAABB(ctx, g.aboveNet, 'yellow');
+        drawAABB(ctx, g.net, 'gray');
+        drawAABB(ctx, g.playerTwo, 'blue');
+
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(g.playerOne.right, g.court.bottom, g.radius, Math.PI, 1.5 * Math.PI, false);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(g.playerTwo.left, g.court.bottom, g.radius, 1.5 * Math.PI, 0, false);
+        ctx.stroke();
+      }
+
+      function buildStaticBodies(gd, world) {
+        var fixDef = new Box2D.Dynamics.b2FixtureDef, bodyDef = new Box2D.Dynamics.b2BodyDef, wallWidth = 60;
+        bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+        fixDef.density = 1.0;
+        fixDef.friction = 0.5;
+        fixDef.restitution = 0.2;
+
+        // left
+        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+        fixDef.shape.SetAsBox(2, gd.courtHeight/gd.scale + 4);
+        bodyDef.position.Set(-2, -2);
+        world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+        // right
+        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+        fixDef.shape.SetAsBox(2, gd.courtHeight/gd.scale +4);
+        bodyDef.position.Set(gd.courtWidth/gd.scale +2, -2);
+        world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+        // floor
+        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+        fixDef.shape.SetAsBox(gd.courtWidth/gd.scale + 4, 2);
+        bodyDef.position.Set(-2, gd.courtHeight/gd.scale + 2);
+        world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+        // top
+        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+        fixDef.shape.SetAsBox(gd.courtWidth/gd.scale + 4, 2);
+        bodyDef.position.Set(-2, -2);
+        world.CreateBody(bodyDef).CreateFixture(fixDef);
       }
 
       $(function() {
@@ -33,7 +82,9 @@
 
         var world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true),
             paddle = new Paddle(world);
-
+        
+        buildStaticBodies(g, world);
+        
         // DEBUG DRAW
         var debugDraw = new Box2D.Dynamics.b2DebugDraw();
         debugDraw.SetSprite(ctx);
@@ -62,8 +113,8 @@
   </head>
   <body>
     <div style="position:relative">
-      <canvas id="bg" style="position:absolute;top:0;left:0;"></canvas>
-      <canvas id="canvas"></canvas>
+      <canvas id="bg" style="position:absolute;"></canvas>
+      <canvas id="canvas" style="position:absolute;"></canvas>
     </div>
     <div id="points">&nbsp;</div>
     <div id="rotation">&nbsp;</div>
