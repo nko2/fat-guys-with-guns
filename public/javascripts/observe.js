@@ -31,5 +31,5 @@ function connectToRoom(port,room,redis){
 }
 
 $(function () {
-  var gameView = new GameView(GameDef, $('#game_view'));
+  var gameView = new GameView(require().GameDef, $('#game_view'));
 });

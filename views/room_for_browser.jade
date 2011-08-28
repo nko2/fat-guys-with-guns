@@ -1,7 +1,7 @@
 !!! 5
 html(lang="en")
   head
-    style()
+    style
       body { margin:0; padding:0; }
       #game_view { position:absolute; }
       #game_view .background { position:relative; z-index:0; }
@@ -31,11 +31,9 @@ html(lang="en")
       div(class="foreground at_origin")
       div(class="background")
         div(class="disco_wall at_origin")
-        img(class="page_chrome" src="/images/background.png")
-        img(class="walls" src="/images/walls.png")
+        img(class="page_chrome", src="/images/background.png")
+        img(class="walls", src="/images/walls.png")
         div(class="score")
-          div(class="player_1")
-            00
-          div(class="player_2")
-            00
+          div(class="player_1") 00
+          div(class="player_2") 00
 
