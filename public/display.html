@@ -25,10 +25,10 @@
         canvas.width = g.courtWidth;
         canvas.height = g.courtHeight;
 
-        drawAABB(ctx, g.playerOne, 'red');
-        drawAABB(ctx, g.aboveNet, 'yellow');
+        drawAABB(ctx, g.playerOne, '#ccf');
+        drawAABB(ctx, g.aboveNet, '#ffc');
         drawAABB(ctx, g.net, 'gray');
-        drawAABB(ctx, g.playerTwo, 'blue');
+        drawAABB(ctx, g.playerTwo, '#ccf');
 
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -59,6 +59,7 @@
 
         // DEBUG DRAW
         var debugDraw = new Box2D.Dynamics.b2DebugDraw();
+        ctx.globalAlpha = 0.8;
         debugDraw.SetSprite(ctx);
         debugDraw.SetDrawScale(30);
         debugDraw.SetFlags(Box2D.Dynamics.b2DebugDraw.e_shapeBit);
