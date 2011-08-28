@@ -9,24 +9,7 @@ function GameView(gameDef, $container) {
   $foreground.width(gameDef.courtWidth);
   $foreground.height(gameDef.courtHeight);
 
-  var colors = ['red','green','blue','yellow'];
-  var tileSize = gameDef.tileSize;
-  for (var k=0; k<2; k++) {
-    for (var i=0; i<4; i++) {
-      for (var j=0; j<5; j++) {
-        var $div = $(document.createElement('div')).addClass('panel');
-        $div.css({
-          width: tileSize,
-          height: tileSize,
-          position: 'absolute',
-          top: j * tileSize,
-          left: k * gameDef.playerTwo.left +  i * tileSize,
-          backgroundColor: colors[Math.floor(Math.random()*colors.length)]
-        });
-        $disco.append($div);
-      }
-    }
-  }
+  new DiscoWall(gameDef, $disco);
 
   this.setState = function(state) {
     this.drawState(state);
