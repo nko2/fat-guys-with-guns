@@ -19,11 +19,12 @@ module.exports = function(app, redis_client) {
     app.get('/phone/:phone_secret/action', function(req, res) {
         var phone_secret = req.params.phone_secret;
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
-            if (data && data.room_data) {
+            if (data && data.room_name) {
                 res.json({ redirect : "/phone_stub/" + data.room_name + "/" + data.port.toString()  });
-            }else {
+            } else {
                 res.json({ "wait" : true });
-            };
+            }
+            ;
         });
     });
 
@@ -36,13 +37,14 @@ module.exports = function(app, redis_client) {
             return;
         }
         res.render('phone_connect', {
-                    layout: 'mobile_layout',
-                    connected: true,
-                    user_name : user_name,
-                    javascripts : ["/javascripts/phone_action_poller.js"]
-                });
+            layout: 'mobile_layout',
+            connected: true,
+            user_name : user_name,
+            javascripts : ["/javascripts/phone_action_poller.js"]
+        });
 
     });
+
     app.get('/phone_stub/:room_id/:port_id', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
@@ -76,7 +78,7 @@ module.exports = function(app, redis_client) {
                     user_name : data.user_name,
                     javascripts : ["/javascripts/phone_action_poller.js"]
                 });
-            }else {
+            } else {
                 res.redirect('/phone');
             }
         });

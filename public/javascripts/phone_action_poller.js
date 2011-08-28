@@ -3,6 +3,7 @@ $(document).ready(function() {
 
     function checkForAction() {
         var phone_secret = getCookie("phone_secret");
+
         $.ajax({
             url: "/phone/"+phone_secret+"/action",
             type: 'get',

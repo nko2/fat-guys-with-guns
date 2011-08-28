@@ -6,12 +6,15 @@ module.exports = function(app, redis_client) {
         var phone_secret = req.cookies['phone_secret'];
         var room_list = [];
 
+        // Clear user room data
+        Util.setRedisUserData(redis_client, phone_secret, { room_name : "", port : ""});
+
         // Get Rooms
         getServerData(function(results) {
-            for(var key in results) {
+            for (var key in results) {
                 try {
                     room_list.push(JSON.parse(results[key]));
-                }catch(ex) {
+                } catch(ex) {
                     // Messed up way to get Redis results, but it will have to work for now
                 }
             }
@@ -34,7 +37,8 @@ module.exports = function(app, redis_client) {
 
         getServerData(function(data) {
             var room_data = JSON.parse(data[room_id]);
-            if (user_action=="play") {
+            if (user_action == "play") {
+                console.warn("setting " + phone_secret + " ", room_data.name, room_data.port);
                 Util.setRedisUserData(redis_client, phone_secret, { room_name : room_data.name, port : room_data.port});
             }
 
@@ -56,37 +60,6 @@ module.exports = function(app, redis_client) {
         redis_client.hgetall("rooms", function(err, data) {
             callback(data);
         });
-
-/*
-        var handleResult = function(err, name, data) {
-            if (err) {
-                console.warn(err);
-                callback({});
-                return;
-            }
-            // This should push a bunch of game rows into results
-            for(var item in data) {
-                results.push(data[item]);
-            }
-            count += 1;
-            if (count == 3) {
-                callback(results);
-            }
-        };
-
-        redis_client.hgetall("server-0", function(err, data) {
-            console.warn(data);
-            handleResult(err, "server-0", data);
-        });
-
-        redis_client.hgetall("server-1", function(err, data) {
-            handleResult(err, "server-1", data);
-        });
-
-        redis_client.hgetall("server-2", function(err, data) {
-            handleResult(err, "server-2", data);
-        });
-        */
     }
 
 }

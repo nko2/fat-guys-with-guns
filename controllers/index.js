@@ -8,10 +8,6 @@ module.exports = function(app, redis_client) {
          return;
         }
         var phone_secret = req.cookies['phone_secret'];
-        /*if (phone_secret) {
-            res.redirect("/home");
-            return;
-        };*/
 
         res.render('index', {
             javascripts : ["/javascripts/old_school.js"]
@@ -33,6 +29,11 @@ module.exports = function(app, redis_client) {
     app.get('/home', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
+        if (!user_name || !phone_secret) {
+            res.redirect("/");
+            return;
+        }
+
         Util.setRedisUserData(redis_client, phone_secret, { is_connected : false});
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
                 res.render('home', {
@@ -42,7 +43,6 @@ module.exports = function(app, redis_client) {
                 });
         });
     });
-
 
     function findUniqueKey(callback) {
         var phone_secret = StringHelper.createRandomWord(7);
