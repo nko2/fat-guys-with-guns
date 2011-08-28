@@ -11,10 +11,6 @@ function GameView(gameDef, $container) {
 
   new DiscoWall(gameDef, $disco);
 
-  this.setState = function(state) {
-    this.drawState(state);
-  };
-
   this.drawState = function(state) {
     state.paddles.forEach( function(paddle, i) {
       var $paddle = $paddles[i];

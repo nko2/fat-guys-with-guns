@@ -9,7 +9,7 @@ $(function () {
       console.log(n+' seconds remaining');
   }
   function onUpdate(dat){
-    gameView.setState(dat);
+    gameView.drawState(dat);
   }
   function onStart(gameState){
     console.log("Starting game");

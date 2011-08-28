@@ -39,12 +39,7 @@ $(function() {
     pt2 = { x:null, y:null },
     lastTouchTime = Date.now(),
     touchUpSinceLastTime = true,
-    isEmitPending = false,
-    ctx = document.getElementById('canvas').getContext('2d');
-  ctx.canvas.width = $body.width();
-  ctx.canvas.height = $body.height();
-  ctx.lineWidth = 20;
-  ctx.lineCap = 'round';
+    isEmitPending = false;
 
   connectToRoom(port, room_id , phone_secret);
 
@@ -106,12 +101,6 @@ $(function() {
     pt1.y = touches[0].pageY / width;
     pt2.x = touches[1].pageX / width;
     pt2.y = touches[1].pageY / width;
-
-    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-    ctx.beginPath();
-    ctx.moveTo(touches[0].pageX, touches[0].pageY);
-    ctx.lineTo(touches[1].pageX, touches[1].pageY);
-    ctx.stroke();
 
     if(immediate) {
       emitNow();

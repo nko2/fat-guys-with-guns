@@ -15,13 +15,7 @@
             lastTouchTime = null,
             touchUpSinceLastTime = true,
             isEmitPending = false,
-            ctx = document.getElementById('canvas').getContext('2d'),
             socket = io.connect();
-
-        ctx.canvas.width = $body.width();
-        ctx.canvas.height = $body.height();
-        ctx.lineWidth = 20;
-        ctx.lineCap = 'round';
 
         socket.emit('subscribe', 'controller');
 
@@ -86,12 +80,6 @@
           pt2.x = touches[1].pageX;
           pt2.y = touches[1].pageY;
 
-          ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-          ctx.beginPath();
-          ctx.moveTo(pt1.x, pt1.y);
-          ctx.lineTo(pt2.x, pt2.y);
-          ctx.stroke();
-
           if(immediate) {
             emitNow();
           }
@@ -124,7 +112,5 @@
       body.down { background-color:#0c0; }
     </style>
   </head>
-  <body>
-    <canvas id="canvas"></canvas>
-  </body>
+  <body>&nbsp;</body>
 </html>
