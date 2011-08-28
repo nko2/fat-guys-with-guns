@@ -20,9 +20,7 @@ $(document).ready(function() {
     var html = [];
 
     room_data.forEach(function(room) {
-      html.push("<div>" + room.name + "&nbsp<span style='font-size:14px'>")
-      html.push("<a href=/room_for_browser/" + room.name + "/watch>Watch</a>");
-      html.push("<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>");
+      html.push("<div>" + room.name + "&nbsp<span style='font-size:24px'>")
       if (room.controllers < 2) {
         html.push("<a href=/room_for_browser/" + room.name + "/play>Play");
         if (room.controllers === 1) {

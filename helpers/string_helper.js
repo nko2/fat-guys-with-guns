@@ -18,3 +18,5 @@ module.exports = {
     }
 
 };
+
+// Found online @ http://james.padolsey.com/javascript/random-word-generator/
