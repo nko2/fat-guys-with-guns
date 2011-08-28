@@ -60,7 +60,8 @@ function GameView(gameDef, $container) {
         left: -gameDef.ballRadius,
         top: -gameDef.ballRadius,
         borderRadius: gameDef.ballRadius,
-        color: '#fff'
+        color: '#fff',
+        border: '1px solid #FFF'
       });
     }
     $ball.css({

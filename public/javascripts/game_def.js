@@ -53,6 +53,6 @@ function GameDef(tileSize, netWidth, scale) {
 
   this.paddleWidth = 100;
   this.paddleHeight = 10;
-  this.ballRadius = 10;
+  this.ballRadius = 15;
 }
 exports.GameDef = new GameDef(100, 20, 30);
