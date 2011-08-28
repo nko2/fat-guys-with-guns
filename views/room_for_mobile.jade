@@ -1,10 +1,13 @@
 !!! 5
 html(lang="en")
  head
+  meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
   style(type="text/css")
     html { height:100%; }
     body { height:100%; margin:0; padding:0; background-color: #c00; user-select:none; text-align:center; }
     body.down { background-color:#0c0; }
+    #messages { text-align:left; padding:10px; font-family:'arial','helvetica','sans-serif'; font-weight:bold; }
+    #messages div { border-bottom: 1px dotted #333; padding:0 10px; }
   script(type="text/javascript")
     var room_id = "#{room_id}";
     var phone_secret = "#{phone_secret}";
@@ -13,3 +16,4 @@ html(lang="en")
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/control.js")
  body
+  div(id="messages")

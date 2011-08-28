@@ -2,18 +2,33 @@ var controllerNumber = null,
     controllerSocket = null;
 
 function onNominate(num){
-    console.log('currently controller '+num);
-    controllerNumber = num;
+  console.log('currently controller '+num);
+  controllerNumber = num;
+  $([
+    '<div class="connected">',
+      'You are connected as Player ', (num+1), ' (on the ', (num == 0 ? 'left' : 'right'), ' side)',
+    '</div>'
+  ].join('')).appendTo( $("#messages") );
 }
 function onGameOver(winner){
     controllerNumber = null;
     console.log("Game over, won by"+winner);
 }
 function onCountdown(n){
-    console.log(n+' seconds remaining');
+  console.log(n+' seconds remaining');
+  var $countdown = $('#messages .countdown');
+  if($countdown.length == 0) {
+    $countdown = $('<div class="countdown">&nbsp;</div>').appendTo( $("#messages") );
+  }
+  console.log("len " + $countdown.length);
+  
+  $countdown.text('The game will start in ' + n + ' seconds');
 }
 function onStart(gameState){
-    console.log("Starting game");
+  console.log("Starting game");
+  $('#messages').html(
+    "<div>The game is starting. Don't look here, look at the computer screen!!!</div>"
+  );
 }
 function onError(err){
     console.log('Damn error'+err);
