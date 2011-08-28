@@ -39,53 +39,6 @@
         ctx.stroke();
       }
 
-      function buildStaticBodies(gd, world) {
-        var fixDef = new Box2D.Dynamics.b2FixtureDef, bodyDef = new Box2D.Dynamics.b2BodyDef, wallWidth = 60;
-        bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
-        fixDef.density = 1.0;
-        fixDef.friction = 0.5;
-        fixDef.restitution = 0.2;
-
-        var s = gd.scale;
-        var width = gd.courtWidth / s;
-        var height = gd.courtHeight / s;
-        var halfWidth = width / 2;
-        var halfHeight = height / 2;
-        var netHalfWidth = gd.net.width / s / 2;
-        var netHalfHeight = gd.net.height / s / 2;
-
-
-        // left
-        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-        fixDef.shape.SetAsBox(1, halfHeight+1);
-        bodyDef.position.Set(-1, halfHeight);
-        world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-        // right
-        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-        fixDef.shape.SetAsBox(1, halfHeight+1);
-        bodyDef.position.Set(width+1, halfHeight);
-        world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-        // top
-        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-        fixDef.shape.SetAsBox(halfWidth+1, 1);
-        bodyDef.position.Set(halfWidth, -1);
-        world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-        // floor
-        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-        fixDef.shape.SetAsBox(halfWidth+1, 1);
-        bodyDef.position.Set(halfWidth, height+1);
-        world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-        //net
-        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-        fixDef.shape.SetAsBox(netHalfWidth, netHalfHeight);
-        bodyDef.position.Set(halfWidth, height - netHalfHeight);
-        world.CreateBody(bodyDef).CreateFixture(fixDef);
-      }
-
       $(function() {
         var g = require('/public/javascripts/game_def.js').GameDef;
         var canvas = document.getElementById("canvas"),
@@ -95,12 +48,12 @@
 
         canvas.width = g.courtWidth;
         canvas.height = g.courtHeight;
-        // debugGameDef(g);
+        debugGameDef(g);
 
         // var world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true),
         //     paddle = new Paddle(world);
 
-        buildStaticBodies(g, world);
+        // buildStaticBodies(g, world);
         
         var gameLogic = new GameLogic(g);
 

@@ -2,19 +2,7 @@ function GameLogic(gameDef) {
   this.gameDef = gameDef;
   this.world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true);
   
-  // TEMP FLOOR
-  var bodyDef = new Box2D.Dynamics.b2BodyDef();
-  bodyDef.type = Box2D.Dynamics.b2Body.b2_kinematicBody;
-  bodyDef.position.Set(0, this.gameDef.courtHeight / this.gameDef.scale);
-  var floor = this.world.CreateBody(bodyDef);
-
-  var fixtureDef = new Box2D.Dynamics.b2FixtureDef();
-  fixtureDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-  fixtureDef.shape.SetAsBox(this.gameDef.courtWidth / this.gameDef.scale, 2);
-  fixtureDef.density = 1.0;
-  floor.CreateFixture(fixtureDef);
-  // TEMP FLOOR END
-  
+  this.buildStaticBodies();
   this.ball = new Ball(this.world, 0.2);
   this.paddles = [
     new Paddle(this.world, 1, .1),
@@ -61,4 +49,51 @@ GameLogic.prototype.reset = function() {
   this.ball.setTransform(this.gameDef.aboveNet.center.x / scale, this.gameDef.aboveNet.center.y / scale, 0);
   
   return this.getState();
+};
+
+GameLogic.prototype.buildStaticBodies = function() {
+  var fixDef = new Box2D.Dynamics.b2FixtureDef, bodyDef = new Box2D.Dynamics.b2BodyDef, wallWidth = 60;
+  bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+  fixDef.density = 1.0;
+  fixDef.friction = 0.5;
+  fixDef.restitution = 0.2;
+
+  var s = this.gameDef.scale;
+  var width = this.gameDef.courtWidth / s;
+  var height = this.gameDef.courtHeight / s;
+  var halfWidth = width / 2;
+  var halfHeight = height / 2;
+  var netHalfWidth = this.gameDef.net.width / s / 2;
+  var netHalfHeight = this.gameDef.net.height / s / 2;
+
+
+  // left
+  fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+  fixDef.shape.SetAsBox(1, halfHeight+1);
+  bodyDef.position.Set(-1, halfHeight);
+  this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+  // right
+  fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+  fixDef.shape.SetAsBox(1, halfHeight+1);
+  bodyDef.position.Set(width+1, halfHeight);
+  this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+  // top
+  fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+  fixDef.shape.SetAsBox(halfWidth+1, 1);
+  bodyDef.position.Set(halfWidth, -1);
+  this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+  // floor
+  fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+  fixDef.shape.SetAsBox(halfWidth+1, 1);
+  bodyDef.position.Set(halfWidth, height+1);
+  this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+  //net
+  fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+  fixDef.shape.SetAsBox(netHalfWidth, netHalfHeight);
+  bodyDef.position.Set(halfWidth, height - netHalfHeight);
+  this.world.CreateBody(bodyDef).CreateFixture(fixDef);
 };
