@@ -6,7 +6,13 @@ function GameDef(tileSize, netWidth, scale) {
     this.bottom = this.maxY = y + height;
     this.width = width;
     this.height = height;
+    this.center = {
+      x: (this.left + this.right) / 2,
+      y: (this.top + this.bottom) / 2
+    };
   }
+  
+  this.scale = scale;
 
   var radius = tileSize * 5,
       playerWidth = tileSize * 4,

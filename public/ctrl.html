@@ -9,6 +9,7 @@
         var $body = $('body'),
             width = $body.width(),
             isDown = false,
+            ctrlId = parseInt(window.location.hash.substr(1), 10) - 1,// TEMP id
             pt1 = { x:null, y:null },
             pt2 = { x:null, y:null },
             ptTmp = null,
@@ -24,7 +25,7 @@
         setInterval(function() {
           if(isEmitPending) {
             isEmitPending = false;
-            socket.emit('pts', [pt1, pt2]);
+            socket.emit('pts', ctrlId, [pt1, pt2]);
           }
         }, 1000/30);
 
@@ -77,7 +78,7 @@
               }).join('')
             );
           
-            socket.emit('pts', [pt1, pt2]);
+            socket.emit('pts', ctrlId, [pt1, pt2]);
             isEmitPending = false;
           }
           else {
@@ -87,7 +88,7 @@
 
         function exportNull(e) {
           $body.html('NO TOUCH');
-          socket.emit('pts', null);
+          socket.emit('pts', ctrlId, null);
           isEmitPending = false;
         }
       });

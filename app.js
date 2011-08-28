@@ -57,8 +57,8 @@ var io = sio.listen(app);
 io.sockets.on('connection', function (socket) {
   socket.on('subscribe', function(type) {
     if(type == 'controller') {
-      socket.on('pts', function(points) {
-        io.sockets.in('views').volatile.emit('pts', points);
+      socket.on('pts', function(index, points) {
+        io.sockets.in('views').volatile.emit('pts', index, points);
       });
     }
     else if(type == 'view') {

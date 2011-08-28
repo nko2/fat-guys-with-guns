@@ -1,4 +1,4 @@
-Paddle = function(world) {
+Paddle = function(world, length, thickness) {
   var bodyDef = new Box2D.Dynamics.b2BodyDef();
   bodyDef.type = Box2D.Dynamics.b2Body.b2_kinematicBody;
   bodyDef.position.Set(10,10);
@@ -6,7 +6,7 @@ Paddle = function(world) {
 
   var fixtureDef = new Box2D.Dynamics.b2FixtureDef();
   fixtureDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-  fixtureDef.shape.SetAsBox(1, .1);
+  fixtureDef.shape.SetAsBox(length || 1, thickness || .1);
   fixtureDef.density = 1.0;
   this.body.CreateFixture(fixtureDef);
 
@@ -19,10 +19,17 @@ Paddle = function(world) {
 
 Paddle.dRotationMax = 5 * Math.PI / 180;
 Paddle.dPositionMax = .5;
-Paddle.dTouchFactor = 10;
-Paddle.fpsFactor = 20;
+Paddle.dTouchFactor = 20;
+Paddle.fpsFactor = .9;
 
-// Paddle.vec = new Box2D.Common.Math.b2Vec2(0, 0);// A vector we'll reuse for calculations to avoid instantiating
+Paddle.prototype.getState = function() {
+  var position = this.body.GetPosition();
+  return {
+    x: position.x,
+    y: position.y,
+    r: this.body.GetAngle()
+  };
+};
 
 Paddle.prototype.setTouchPoints = function (points) {
   if(points) {
@@ -42,7 +49,7 @@ Paddle.prototype.setTouchPoints = function (points) {
     var dTouch = new Box2D.Common.Math.b2Vec2(ptMid.x - this.touch0.x, ptMid.y - this.touch0.y);
     this.positionTarget.Set(this.position0.x + dTouch.x * Paddle.dTouchFactor, this.position0.y + dTouch.y * Paddle.dTouchFactor);
     
-    $('#rotation').text( Math.round(rads * 180 / Math.PI) );
+    // $('#rotation').text( Math.round(rads * 180 / Math.PI) );
   }
   else {
     // it's a touchend
@@ -50,37 +57,44 @@ Paddle.prototype.setTouchPoints = function (points) {
   }
 };
 
-Paddle.prototype.onFrame = function () {
-  var rotationChanged = (this.rotationTarget != null) && this.updateRotation(),
-      positionChanged = this.updatePosition();
-  // this.body.SetPosition(this.positionTarget);
+Paddle.prototype.setTransform = function(x, y, rotation) {
+  this.body.SetPosition( new Box2D.Common.Math.b2Vec2(x, y) );
+  this.body.SetAngle(rotation);
+  this.positionTarget.Set(x,y);
+  this.rotationTarget = rotation;
+};
+
+
+Paddle.prototype.onFrame = function (t) {
+  var rotationChanged = (this.rotationTarget != null) && this.updateRotation(t),
+      positionChanged = this.updatePosition(t);
   
   return rotationChanged || positionChanged;
 };
 
-Paddle.prototype.updatePosition = function () {
+Paddle.prototype.updatePosition = function (t) {
   var position = this.body.GetPosition();
       dPosition = new Box2D.Common.Math.b2Vec2(this.positionTarget.x - position.x, this.positionTarget.y - position.y);
       
   if(dPosition.Length() > Paddle.dPositionMax) {
     dPosition.Multiply(Paddle.dPositionMax / dPosition.Length());
   }
-  dPosition.Multiply(Paddle.fpsFactor);
+  dPosition.Multiply(Paddle.fpsFactor / t);
   this.body.SetLinearVelocity(dPosition);
   return true;
 };
 
-Paddle.prototype.updateRotation = function () {
+Paddle.prototype.updateRotation = function (t) {
   var dRotation = this.rotationTarget - this.body.GetAngle(),
       dRotationAbs = Math.abs(dRotation);
     
   if(dRotationAbs < 0.01) {
     this.body.SetAngle(this.rotationTarget);
-    $('#rotation_speed').text('---');
+    // $('#rotation_speed').text('---');
     return false;
   }
 
-  $('#rotation_speed').text(dRotation);
+  // $('#rotation_speed').text(dRotation);
 
   this.body.SetAwake(true);
 
@@ -93,7 +107,7 @@ Paddle.prototype.updateRotation = function () {
   if(dRotationAbs > Paddle.dRotationMax) {
     dRotation = Paddle.dRotationMax * dRotation / dRotationAbs;
   }
-  this.body.SetAngularVelocity(Paddle.fpsFactor * dRotation);
+  this.body.SetAngularVelocity(Paddle.fpsFactor * dRotation / t);
 
   return true;
 };
