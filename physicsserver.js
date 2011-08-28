@@ -10,7 +10,8 @@ if (process.getuid() === 0)
 console.log("Started physics server "+serverNumber);
 var io = require('socket.io').listen(port),
     redis = require('redis').createClient(),
-    GameLogic = require('./physMock.js').GameLogic;
+    GameLogic = require('./public/javascripts/game_logic.js').GameLogic,
+    GameDef = require('./public/javascripts/game_def.js').GameDef;
 
 redis.on("error", function (err) {
 	console.log("Redis connection error to " + redis.host + ":" + redis.port + " - " + err);
@@ -59,7 +60,7 @@ io.sockets.on('connection',function(socket){
 Game = function(id){
     this.gameId = id;
     //Initialize a new physics object here
-    this.physics = new GameLogic();
+    this.physics = new GameLogic(GameDef);
     this.c0 = null;
     this.c1 = null;
     this.running = false;

@@ -106,3 +106,4 @@ GameLogic.prototype.buildStaticBodies = function() {
     this.world.CreateBody(bodyDef).CreateFixture(fixDef);
   }
 };
+exports.GameLogic = GameLogic;
