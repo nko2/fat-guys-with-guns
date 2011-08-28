@@ -16,25 +16,14 @@ io.sockets.on('connection',function(socket){
 		var g = games[gameId];
 		if(typeof g == 'undefined'){
 		    if(gamesPerProcess > 0){
-			games[gameId] = new PGame(gameId,socket);
+			g = games[gameId] = new PGame(gameId);
 			gamesPerProcess--;
 		    }else{
 			socket.emit('error','No more practice rooms available');
 			return;
 		    }
-		}else{
-		    if(type == 'controller'){
-			if(g.c0 === null){
-			    g.connect(0,socket);
-			}else if(g.c1 === null){
-			    g.connect(1,socket);
-			}else{
-			    socket.emit('error','This room already has two controllers');
-			}
-		    }else{
-			socket.emit('error','This id is taken');
-		    }
 		}
+		g.connect(type,socket);
             });
         socket.on('disconnect',function(){
 		var g = gameBySocketId[socket.id];
@@ -56,28 +45,40 @@ io.sockets.on('connection',function(socket){
 		}
             });
     });
-PGame = function(id,host){
-    this.host = host;
+PGame = function(id){
+    this.host = null;
     this.gid = id;
     this.c0 = null;
     this.c1 = null;
     gameBySocketId[host.id] = this;
 };
-PGame.prototype.connect = function(id,socket){
-    if(id == 0){
-	this.c0 = socket;
+
+PGame.prototype.connect = function(type,socket){
+    if(type=='viewer' && this.host==null){
+	this.host = socket;
+	gameBySocketId[socket.id] = this;
+    }else if(type == 'controller'){
+	var id;
+	if(this.c0 == null){
+	    this.c0 = socket;
+	    id = 0;
+	}else if(this.c1 == null){
+	    this.c1 = socket;
+	    id = 1;
+	}else{
+	    socket.emit('error','This room already has two controllers');
+	    return;
+	}
+	(function(pgame){
+	    socket.on('paddle',function(point){
+		    if(pgame.host) pgame.host.emit('paddle',id,point);
+		});
+	    socket.on('dbl',function(){
+		    if(pgame.host) pgame.host.emit('dlb',id);
+		});
+	})(this)
+	gameBySocketId[socket.id] = this;
+    }else{
+	socket.emit('error','This room is full');
     }
-    if(id == 1){
-	this.c1 = socket;
-    }
-    (function(pgame){
-	socket.on('paddle',function(point){
-		pgame.host.emit('paddle',id,point);
-	    });
-	socket.on('dbl',function(){
-		pgame.host.emit('dlb',id);
-	    });
-    })(this);
-    socket.emit('connected',id);
-    gameBySocketId[socket.id] = this;
 };
