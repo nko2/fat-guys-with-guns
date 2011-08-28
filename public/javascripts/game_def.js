@@ -12,6 +12,11 @@ function GameDef(tileSize, netWidth, scale) {
     };
   }
 
+  AABB.prototype.contains = function(point) {
+    return Math.max(this.left, Math.min(this.right, point.x)) == point.x &&
+           Math.max(this.top, Math.min(this.bottom, point.y)) == point.y;
+  };
+
   this.scale = scale;
   this.tileSize = tileSize;
 

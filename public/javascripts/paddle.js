@@ -51,8 +51,6 @@ Paddle.prototype.setTouchPoints = function (points) {
     
     var dTouch = new Box2D.Common.Math.b2Vec2(ptMid.x - this.touch0.x, ptMid.y - this.touch0.y);
     this.positionTarget.Set(this.position0.x + dTouch.x * Paddle.dTouchFactor, this.position0.y + dTouch.y * Paddle.dTouchFactor);
-    
-    // $('#rotation').text( Math.round(rads * 180 / Math.PI) );
   }
   else {
     // it's a touchend
