@@ -20,12 +20,16 @@ function onError(err){
 
 function connectToRoom(port,room,redis){
     var socket = io.connect(['http://',document.domain,':',port].join(''));
-    socket.emit('subscribe','viewer',room,redis);
     socket.on('error',onError);
     socket.on('win',onGameOver);
     socket.on('time',onCountdown);
     socket.on('start',onStart);
     socket.on('state',onState);
     socket.on('update',onUpdate);
+    socket.emit('subscribe','viewer',room,redis);
     return socket;
 }
+
+$(function () {
+  var gameView = new GameView(GameDef, $('#game_view'));
+});
