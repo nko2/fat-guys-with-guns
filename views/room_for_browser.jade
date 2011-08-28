@@ -10,4 +10,6 @@ html(lang="en")
        var phone_secret = "#{phone_secret}";
        var user_action = "#{user_action}";
        var port = "#{port}";
+       var socket = connectToRoom("http://localhost:"+port, room_id , phone_secret);
+
  body
