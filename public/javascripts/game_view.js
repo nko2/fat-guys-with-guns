@@ -1,6 +1,8 @@
 function GameView(gameDef, $container) {
 
   var $foreground = $container.find('.foreground'),
+      $background = $container.find('.background'),
+      $disco = $background.find('.disco_wall'),
       $paddles = [],
       $ball = null;
 
@@ -9,35 +11,22 @@ function GameView(gameDef, $container) {
 
   var colors = ['red','green','blue','yellow'];
   var tileSize = gameDef.tileSize;
-  for (var i=0; i<4; i++) {
-    for (var j=0; j<5; j++) {
-      var $div = $(document.createElement('div'));
-      $div.css({
-        width: tileSize,
-        height: tileSize,
-        position: 'absolute',
-        top: j * tileSize,
-        left: i * tileSize,
-        background: colors[Math.floor(Math.random()*colors.length)]
-      });
-      $foreground.append($div);
+  for (var k=0; k<2; k++) {
+    for (var i=0; i<4; i++) {
+      for (var j=0; j<5; j++) {
+        var $div = $(document.createElement('div')).addClass('panel');
+        $div.css({
+          width: tileSize,
+          height: tileSize,
+          position: 'absolute',
+          top: j * tileSize,
+          left: k * gameDef.playerTwo.left +  i * tileSize,
+          backgroundColor: colors[Math.floor(Math.random()*colors.length)]
+        });
+        $disco.append($div);
+      }
     }
   }
-  for (var i=0; i<4; i++) {
-    for (var j=0; j<5; j++) {
-      var $div = $(document.createElement('div'));
-      $div.css({
-        width: tileSize,
-        height: tileSize,
-        position: 'absolute',
-        top: j * tileSize,
-        left: gameDef.playerTwo.left + i * tileSize,
-        background: colors[Math.floor(Math.random()*colors.length)]
-      });
-      $foreground.append($div);
-    }
-  }
-
 
   this.setState = function(state) {
     this.drawState(state);
@@ -52,14 +41,16 @@ function GameView(gameDef, $container) {
           position: 'absolute'
         });
 
-        var $paddleInner = $(document.createElement('div')).appendTo($paddle);
+        var $paddleInner = $(document.createElement('div')).appendTo($paddle),
+            border = 1;
         $paddleInner.css({
+          border: border + 'px solid #fff',
           width: gameDef.paddleWidth,
           height: gameDef.paddleHeight,
           backgroundColor: '#333',
           position: 'absolute',
-          left: -gameDef.paddleWidth/2,
-          top: -gameDef.paddleHeight/2
+          left: -gameDef.paddleWidth/2 - border,
+          top: -gameDef.paddleHeight/2 - border
         });
       }
 
