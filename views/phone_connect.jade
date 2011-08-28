@@ -11,7 +11,7 @@ div(class="screen_centered_mobile")
       div(style="margin-bottom: 5px;")
         label Enter the code you see on your computer
       form(action="phone_connect", method="post")
-          input(type="text", name="phone_secret", style="text-align: center;")
+          input(type="text", name="phone_secret", style="text-align: center;", autocomplete="off")
           div
             input(type="submit", value="Go!", class="submit_button")
       -}
