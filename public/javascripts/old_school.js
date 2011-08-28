@@ -1,6 +1,5 @@
 $(document).ready(function() {
     var html_array = $(".printable").text().split("");
-    console.warn(html_array);
     var index = 0;
 
     $(".printable").html("");
