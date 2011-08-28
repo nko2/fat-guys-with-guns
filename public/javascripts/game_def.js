@@ -39,6 +39,11 @@ function GameDef(tileSize, netWidth, scale) {
   this.aboveNet = aboveNet;
   this.net = net;
   this.playerTwo = playerTwo;
+  
+  this.servingPos = [
+    Box2D.Common.Math.b2Math.AddVV(playerOne.center, { x:-50, y:-75 }),
+    Box2D.Common.Math.b2Math.AddVV(playerTwo.center, { x: 50, y:-75 })
+  ];
 
   this.paddleWidth = 100;
   this.paddleHeight = 10;

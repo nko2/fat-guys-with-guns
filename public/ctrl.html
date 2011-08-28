@@ -12,7 +12,8 @@
             ctrlId = parseInt(window.location.hash.substr(1), 10) - 1,// TEMP id
             pt1 = { x:null, y:null },
             pt2 = { x:null, y:null },
-            ptTmp = null,
+            lastTouchTime = null,
+            touchUpSinceLastTime = true,
             isEmitPending = false,
             ctx = document.getElementById('canvas').getContext('2d'),
             socket = io.connect();
@@ -24,7 +25,7 @@
 
         socket.emit('subscribe', 'controller');
 
-        $body.bind('touchstart', touchchange);
+        $body.bind('touchstart', touchstart);
         $body.bind('touchmove', touchmove);
         $body.bind('touchend', touchchange);
 
@@ -34,10 +35,25 @@
           }
         }, 1000/30);
 
+        function touchstart(e) {
+          var t = Date.now();
+          if(lastTouchTime && touchUpSinceLastTime && (t - lastTouchTime < 400) && (t - lastTouchTime > 50)) {
+            lastTouchTime = null;
+            socket.emit('dbl', ctrlId);
+          }
+          lastTouchTime = t;
+          touchUpSinceLastTime = false;
+          touchchange(e);
+        }
+
         function touchchange(e) {
           e.preventDefault();
           var wasDown = isDown;
           isDown = e.originalEvent.targetTouches.length == 2;
+
+          if(e.originalEvent.targetTouches.length == 0) {
+            touchUpSinceLastTime = true;
+          }
 
           if(isDown) {
             $body.addClass("down");
@@ -50,8 +66,10 @@
             exportTouches(e, true);
           }
           else if(wasDown) {
+            emitNow();
             exportNull(e);
           }
+
         }
 
         function touchmove(e) {
@@ -63,15 +81,15 @@
 
         function exportTouches(e, immediate) {
           var touches = e.originalEvent.targetTouches;
-          pt1.x = touches[0].pageX / width;
-          pt1.y = touches[0].pageY / width;
-          pt2.x = touches[1].pageX / width;
-          pt2.y = touches[1].pageY / width;
-          
+          pt1.x = touches[0].pageX;
+          pt1.y = touches[0].pageY;
+          pt2.x = touches[1].pageX;
+          pt2.y = touches[1].pageY;
+
           ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
           ctx.beginPath();
-          ctx.moveTo(touches[0].pageX, touches[0].pageY);
-          ctx.lineTo(touches[1].pageX, touches[1].pageY);
+          ctx.moveTo(pt1.x, pt1.y);
+          ctx.lineTo(pt2.x, pt2.y);
           ctx.stroke();
 
           if(immediate) {
@@ -96,7 +114,7 @@
           );*/
 
           isEmitPending = false;
-          socket.emit('pts', ctrlId, [pt1, pt2]);
+          socket.emit('pts', ctrlId, pt1.x / width, pt1.y / width, pt2.x / width, pt2.y / width);//[pt1, pt2]);
         };
       });
     </script>

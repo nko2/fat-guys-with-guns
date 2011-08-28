@@ -55,12 +55,15 @@ app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
 });
 
 var io = sio.listen(app);
-io.set('log level', 1);
+// io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
   socket.on('subscribe', function(type) {
     if(type == 'controller') {
-      socket.on('pts', function(index, points) {
-        io.sockets.in('views').volatile.emit('pts', index, points);
+      socket.on('pts', function(index, pt1x, pt1y, pt2x, pt2y) {
+        io.sockets.in('views').volatile.emit('pts', index, pt1x == null ? null : [{x:pt1x, y:pt1y},{x:pt2x, y:pt2y}]);
+      });
+      socket.on('dbl', function(index) {// Doubletouch event
+        io.sockets.in('views').volatile.emit('dbl', index);
       });
     }
     else if(type == 'view') {

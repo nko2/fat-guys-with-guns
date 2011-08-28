@@ -78,7 +78,7 @@ function GameView(gameDef, $container) {
         position: 'absolute'
       });
 
-      var $ballInner = $(document.createElement('div')).appendTo($ball);
+      var $ballInner = $(document.createElement('div')).text('-').appendTo($ball);
       $ballInner.css({
         width: gameDef.ballRadius * 2,
         height: gameDef.ballRadius * 2,
@@ -86,7 +86,8 @@ function GameView(gameDef, $container) {
         position: 'absolute',
         left: -gameDef.ballRadius,
         top: -gameDef.ballRadius,
-        borderRadius: gameDef.ballRadius
+        borderRadius: gameDef.ballRadius,
+        color: '#fff'
       });
     }
     $ball.css({

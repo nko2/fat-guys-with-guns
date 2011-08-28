@@ -80,6 +80,9 @@
         socket.on('pts', function (index, points) {
           gameLogic.setTouchPoints(index, points);
         });
+        socket.on('dbl', function (index) {
+          gameLogic.doubleTouch(index);
+        });
       });
     </script>
     <style>
