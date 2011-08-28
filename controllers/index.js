@@ -14,6 +14,7 @@ module.exports = function(app, redis_client) {
         };*/
 
         res.render('index', {
+            javascripts : ["/javascripts/old_school.js"]
         });
     });
 
@@ -37,7 +38,7 @@ module.exports = function(app, redis_client) {
                 res.render('home', {
                     user_name : user_name,
                     phone_secret : phone_secret,
-                    javascripts : ["/javascripts/connected_poller.js"]
+                    javascripts : ["/javascripts/connected_poller.js", "/javascripts/old_school.js"]
                 });
         });
     });

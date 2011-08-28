@@ -1,11 +1,9 @@
 div
-  div(class="aldrich", style="width: 390px; float: right")
-    p PadPaddle is a multiplayer game that plays like a cross between volleyball and Pong.
-    p Players control their paddle using their touch phone, while the game action takes place on a desktop.
-    p And... no worries: PadPaddle is all browser based; no installation required!
-  p(style="margin: 100px 0px 0px 100px;")
-    label Enter a name to be known as:
-    form(action="/register", method="post", onsubmit="return $('#user_name').val().length > 0")
-      input(type="text", name="user_name", id="user_name")
-      input(type="submit", value="Go!", class="submit_button")
+  div(style="float: right; text-align: left; padding: 40px 100px 0 0;")
+      div(class="aldrich pad_color", style="font-size: 20px;") Enter a username:
+      form(action="/register", method="post", onsubmit="return $('#user_name').val().length > 0")
+        input(type="text", name="user_name", id="user_name", style="font: 20px aldrich;text-align: center;")
+        input(type="submit", value="Go!", class="submit_button pad_color", style="font: 20px aldrich;")
+  div(class="aldrich printable", style="width: 390px;")
+   | PadPaddle is a multiplayer game that plays like a cross between volleyball and Pong.^Players control their paddle using their touch phone, while the game action takes place on a desktop.^And... no worries: PadPaddle is all browser based; no installation required!
 
