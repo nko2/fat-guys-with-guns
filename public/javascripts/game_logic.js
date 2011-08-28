@@ -95,6 +95,8 @@ GameLogic.prototype.enterServeMode = function(playerNum) {
   }, 5000);
 };
 GameLogic.prototype.enterPlayMode = function() {
+  this.ball.body.m_linearVelocity.x = 0;
+  this.ball.body.m_linearVelocity.y = -5;
   this.state = GameState.IN_PLAY;
 };
 
@@ -105,7 +107,7 @@ GameLogic.prototype.step = function(t) {
   });
 
   this.ball.onFrame(t, this.state);
-  this.world.Step(t, 10, 10);
+  this.world.Step(t, 8, 6);
   this.world.DrawDebugData();
 
   return this.getState();
