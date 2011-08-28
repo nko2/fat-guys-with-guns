@@ -8,6 +8,8 @@ if (process.getuid() === 0)
         });
 console.log("Started practice server");
 var io = require('socket.io').listen(port);
+io.set('log level', 1);
+
 var games = {},
     gameBySocketId = {},
     gamesPerProcess = 32;

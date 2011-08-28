@@ -6,6 +6,7 @@ var express = require('express'),
     redis   = require('redis'),
     sio     = require('socket.io'),
     nko     = require('nko')('HZImKIPa/PNedR2z');
+sio.set('log level', 1);
 
 var app = module.exports = express.createServer();
 
@@ -55,7 +56,7 @@ app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
 });
 
 var io = sio.listen(app);
-// io.set('log level', 1);
+io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
   socket.on('subscribe', function(type) {
     if(type == 'controller') {
