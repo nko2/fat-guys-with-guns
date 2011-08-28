@@ -11,8 +11,9 @@ function GameDef(tileSize, netWidth, scale) {
       y: (this.top + this.bottom) / 2
     };
   }
-  
+
   this.scale = scale;
+  this.tileSize = tileSize;
 
   var radius = tileSize * 5,
       playerWidth = tileSize * 4,
@@ -25,6 +26,7 @@ function GameDef(tileSize, netWidth, scale) {
       playerTwo = new AABB(net.right, 0, playerWidth, courtHeight);
   this.radius = radius;
   this.playerWidth = playerWidth;
+  this.outerWidth = 2*radius + netWidth;
   this.courtWidth = courtWidth;
   this.courtHeight = courtHeight;
   this.court = court;
@@ -32,8 +34,7 @@ function GameDef(tileSize, netWidth, scale) {
   this.aboveNet = aboveNet;
   this.net = net;
   this.playerTwo = playerTwo;
-  this.scale = scale;
-  
+
   this.paddleWidth = 100;
   this.paddleHeight = 10;
   this.ballRadius = 10;
