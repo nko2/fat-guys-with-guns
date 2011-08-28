@@ -24,8 +24,7 @@
         
         setInterval(function() {
           if(isEmitPending) {
-            isEmitPending = false;
-            socket.emit('pts', ctrlId, [pt1, pt2]);
+            emitNow();
           }
         }, 1000/30);
 
@@ -63,34 +62,30 @@
           pt2.x = touches[1].pageX / width;
           pt2.y = touches[1].pageY / width;
           
-/*
-          if(pt1.x > pt2.x) {
-            ptTmp = pt1;
-            pt1 = pt2;
-            pt2 = ptTmp; 
+          if(immediate) {
+            emitNow();
           }
-*/
-
-          // if(immediate) {
-            $body.html(
-              $.map([pt1, pt2], function(pt) {
-                return '<div>' + pt.x + ', ' + pt.y + '</div>';
-              }).join('')
-            );
-          
-            socket.emit('pts', ctrlId, [pt1, pt2]);
-            isEmitPending = false;
-          // }
-          // else {
-          //   isEmitPending = true;
-          // }
+          else {
+            isEmitPending = true;
+          }
         }
 
         function exportNull(e) {
-          $body.html('NO TOUCH');
+          // $body.html('NO TOUCH');
           socket.emit('pts', ctrlId, null);
           isEmitPending = false;
         }
+        
+        function emitNow() {
+          /*$body.html(
+            $.map([pt1, pt2], function(pt) {
+              return '<div>' + pt.x + ', ' + pt.y + '</div>';
+            }).join('')
+          );*/
+        
+          isEmitPending = false;
+          socket.emit('pts', ctrlId, [pt1, pt2]);
+        };
       });
     </script>
     <style type="text/css">

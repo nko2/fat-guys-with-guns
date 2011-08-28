@@ -30,11 +30,6 @@ GameLogic.prototype.step = function(t) {
   this.world.Step(t, 10, 10);
   this.world.DrawDebugData();
   
-  if(Math.random() < .04) {
-    // console.log("B",this.ball.body.GetPosition().x,this.ball.body.GetPosition().y);
-    // console.log("P",this.paddles[1].body.GetPosition().x,this.paddles[1].body.GetPosition().y);
-  }
-  
   return this.getState();
 };
 
