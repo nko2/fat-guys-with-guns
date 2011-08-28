@@ -2,6 +2,7 @@
 <html>
   <head>
     <link href="/stylesheets/view.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Aldrich', rel='stylesheet', type='text/css'>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/exports.js"></script>
     <script type="text/javascript" src="/javascripts/Box2D.min.js"></script>
@@ -72,8 +73,8 @@
         gameLogic.world.SetDebugDraw(debugDraw);
 
         setInterval(function() {
-          gameLogic.step(1/60);
-          gameView.drawState(gameLogic.getState());
+          var state = gameLogic.step(1/60);
+          gameView.drawState(state);
         }, 1000/60);
 
         // Socket
@@ -89,14 +90,15 @@
   </head>
   <body>
     <div id="game_view">
+      <div class="messaging" ></div>
       <div class="foreground at_origin"></div>
       <div class="background">
         <div class="disco_wall at_origin"></div>
         <img class="page_chrome" src="/images/background.png">
         <img class="walls" src="/images/walls.png">
         <div class="score">
-          <div class="player_1">00</div>
-          <div class="player_2">00</div>
+          <div class="player_1">0</div>
+          <div class="player_2">0</div>
         </div>
       </div>
     </div>

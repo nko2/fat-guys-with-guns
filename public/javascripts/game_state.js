@@ -1,6 +1,7 @@
 GameState = {
   IN_PLAY: {},
-  SERVING: {}
-}
+  SERVING: {},
+  LINGERING: {}
+};
 exports.GameState = GameState;
 

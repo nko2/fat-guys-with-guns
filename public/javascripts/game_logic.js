@@ -5,6 +5,7 @@ var Arena = require('./arena.js').Arena;
 var GameState = require('./game_state.js').GameState;
 
 function GameLogic(gameDef) {
+  this.queuedEvents = [];
   this.score = [0,0];
   this.state = null;
 
@@ -36,7 +37,9 @@ function GameLogic(gameDef) {
         playerNum = GameLogic.PLAYER_1;
       }
       // if by now playerNum is still null, we have a bug
-      _this.pointScored(playerNum, GameEvent.TOUCHED_FLOOR);
+      if(_this.state == GameState.IN_PLAY) {
+        _this.pointScored(playerNum, GameEvent.TOUCHED_FLOOR);
+      }
     }
   };
   this.world.SetContactListener(listener);
@@ -49,20 +52,46 @@ GameLogic.PLAYER_1 = 0;
 GameLogic.PLAYER_2 = 1;
 
 GameLogic.prototype.pointScored = function(playerNum, reason) {
+  if(this.state != GameState.IN_PLAY) {
+    console.log("This shouldn't happen: looks like a point is scored while game is not in play. That's wrong.");
+    return;
+  }
   this.score[playerNum]++;
-  this.enterServeMode(playerNum);
+  // this.enterServeMode(playerNum);
+  this.queuedEvents.push({
+    score: this.score
+  });
+  
+  this.state = GameState.LINGERING;
+  var _this = this;
+  setTimeout(function() {
+    _this.enterServeMode(playerNum);
+  }, 2000);
+  
+/*
   this.state.event = {
     score: this.score
   };
-  console.log("Player " + (playerNum + 1) + " scores, because " + reason);
+*/
 };
 
 // STATE
 GameLogic.prototype.getState = function() {
-  return {
+  var output = {
     paddles: this.paddles.map( function(paddle) { return paddle.getState(); } ),
     ball: this.ball.getState()
   };
+/*
+  if(this.state && this.state.event) {
+    output.event = [ this.state.event ];
+    this.state.event = null;
+  }
+*/
+  if(this.queuedEvents.length > 0) {
+    output.event = this.queuedEvents;
+    this.queuedEvents = [];
+  }
+  return output;
 };
 GameLogic.prototype.over = function(){
     return false;

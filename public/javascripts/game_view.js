@@ -4,6 +4,8 @@ function GameView(gameDef, $container) {
       $background = $container.find('.background'),
       $disco = $background.find('.disco_wall'),
       $paddles = [],
+      $score0 = $background.find('.score .player_1'),
+      $score1 = $background.find('.score .player_2'),
       $ball = null;
 
   $foreground.width(gameDef.courtWidth);
@@ -64,5 +66,14 @@ function GameView(gameDef, $container) {
       left: state.ball.x * gameDef.scale,
       top:  state.ball.y * gameDef.scale
     });
+    
+    if(state.event) {
+      $.each(state.event, function(i, event) {
+        if(event.score && event.score.length == 2) {
+          $score0.text(event.score[0]);
+          $score1.text(event.score[1]);
+        }
+      });
+    }
   };
 }
