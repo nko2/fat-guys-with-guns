@@ -24,7 +24,7 @@ module.exports = function(app, redis_client) {
                   var action = data.room_name.split(":")[0];
                   if (action === "practice") {
                     var place = data.room_name.split(":")[1];
-                    res.json({ redirect : "/practice/" + place });
+                    res.json({ redirect : "/practice_mobile/" + place });
                   }else {
                     console.warn("Directing to something other than practice");
                   }

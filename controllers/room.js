@@ -21,35 +21,39 @@ module.exports = function(app, redis_client) {
   app.get('/practice', function(req, res) {
     var user_name = req.cookies['user_id'];
     var phone_secret = req.cookies['phone_secret'];
-
+    var id = StringHelper.createRandomWord(7);
     // Clear user room data
     Util.setRedisUserData(redis_client, phone_secret, { room_name : "", port : ""});
 
     res.render('practice', {
       user_name : user_name,
       phone_secret : phone_secret,
-      url : "/practice/" + StringHelper.createRandomWord(7),
+      mobile_url : "/practice_mobile/" + id,
+      browser_url : "/practice_browser/" + id,
       javascripts : ["/javascripts/old_school.js", "/javascripts/practice_page.js"]
     });
   });
 
-  app.get('/practice/:id', function(req, res) {
+  app.get('/practice_mobile/:id', function(req, res) {
     var user_name = req.cookies['user_id'];
     var phone_secret = req.cookies['phone_secret'];
     var practice_id = req.params.id;
-    if (Util.isMobile(req)) {
-      res.render('practice_room_for_mobile', {
-        layout : false,
-        id : practice_id
-      });
-    }else {
-      Util.setRedisUserData(redis_client, phone_secret, { room_name : "practice:"+practice_id });
-      res.render('practice_room_for_browser', {
-        layout : false,
-        id : practice_id
-      });
-    }
+    res.render('practice_room_for_mobile', {
+      layout : false,
+      id : practice_id
+    });
+  });
 
+  app.get('/practice_browser/:id', function(req, res) {
+    var user_name = req.cookies['user_id'];
+    var phone_secret = req.cookies['phone_secret'];
+    var practice_id = req.params.id;
+
+    Util.setRedisUserData(redis_client, phone_secret, { room_name : "practice:"+practice_id });
+    res.render('practice_room_for_browser', {
+      layout : false,
+      id : practice_id
+    });
   });
 
   app.get('/room_for_browser/:room_id/:user_action', function(req, res) {
