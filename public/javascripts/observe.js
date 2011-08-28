@@ -1,5 +1,7 @@
 $(function () {
   var gameView = new GameView(require().GameDef, $('#game_view'));
+  gameView.displayMessage("Waiting for another player to join");
+  
   connectToRoom(port,room_id,phone_secret);
   var $mess = $('.message');
   function emitMessage(m){$mess.text(m);console.log(m);}
@@ -11,7 +13,7 @@ $(function () {
   }
   function onCountdown(n){
     if(n > 0){
-      gameView.displayMessage("Game will start in " + n + "seconds");
+      gameView.displayMessage("Game will start in " + n + " seconds");
       setTimeout(function(){onCountdown(n-1);},1000);
     }
     else {
@@ -22,7 +24,6 @@ $(function () {
     gameView.drawState(dat);
   }
   function onStart(gameState){
-      gameView.displayMessage("Game starting");
       setTimeout(function(){
         gameView.displayMessage(null);
       },2000);
