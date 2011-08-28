@@ -17,21 +17,17 @@ redis.on("error", function (err) {
 	console.log("Redis connection error to " + redis.host + ":" + redis.port + " - " + err);
     });
 
+
 var games = {},
     gameBySocketId = {},
     redisKeys = {},
-    gamesLeft = 4;//Random guess - can we simulate 4 games per process?
+    gamesPerProcess = 4;
+
 io.sockets.on('connection',function(socket){
 	socket.on('subscribe',function(type,gameId,redisKey){
 		var room = games[gameId];
 		if(typeof room === 'undefined'){
-		    if(gamesLeft > 0){
-			games[gameId] = room = new Game(gameId);
-			gamesLeft--;
-		    }else{
-			socket.emit('error',"This game room is full");
-		    //This message is slightly misleading, but should trigger the same failure path in the client
-		    }
+		    socket.emit('error',"Bad room id");
 		}
 		if(room)
 		    if(room.join(socket,type)){
@@ -46,11 +42,7 @@ io.sockets.on('connection',function(socket){
 		var gameId, game;
 		if(gameId = gameBySocketId[socket.id]){
 		    if(game=games[gameId]){
-			game.remove(socket.id);
-			if(game.empty()){
-			    delete game[gameId];
-			    gamesLeft++;
-			}			
+			game.remove(socket.id);	
 		    }
 		    delete gameBySocketId[socket.id];
 		}		
@@ -149,6 +141,11 @@ Game.prototype.begin = function(){
 Game.prototype.redisRecord = function(){
     return {name:this.gameId,viewers:this.viewers,controllers:this.controllers,port:port};
 };
+
+for(var i = 0;i<gamesPerProcess;i++){
+    games[i] = new Game(i+gamesPerProcess*serverNumber);
+}
+
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
 function chooseControllers(set,cont){    
     // It turns out that writing the comparison predicate for the data is just a pain in the ass. Randomly schedule, for now.
