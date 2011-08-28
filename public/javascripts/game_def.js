@@ -33,5 +33,9 @@ function GameDef(tileSize, netWidth, scale) {
   this.net = net;
   this.playerTwo = playerTwo;
   this.scale = scale;
+  
+  this.paddleWidth = 100;
+  this.paddleHeight = 10;
+  this.ballRadius = 10;
 }
-exports.GameDef = new GameDef(100, 10, 30);
+exports.GameDef = new GameDef(100, 20, 30);

@@ -16,13 +16,11 @@ function Ball(world, radius) {
 Ball.vMax = 20;
 
 Ball.prototype.getState = function() {
-  Paddle.prototype.getState = function() {
-    var position = this.body.GetPosition();
-    return {
-      x: position.x,
-      y: position.y,
-      r: this.body.GetAngle()
-    };
+  var position = this.body.GetPosition();
+  return {
+    x: position.x,
+    y: position.y,
+    r: this.body.GetAngle()
   };
 };
 

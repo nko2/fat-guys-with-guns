@@ -55,9 +55,11 @@
         //     paddle = new Paddle(world);
 
         // buildStaticBodies(g, world);
-        
+
         var gameLogic = new GameLogic(g),
-            gameView = new GameView();
+            gameView = new GameView(g, $('#game_view'));
+
+        gameView.setState(gameLogic.getState());
 
         // DEBUG DRAW
         var debugDraw = new Box2D.Dynamics.b2DebugDraw();
@@ -68,35 +70,34 @@
         gameLogic.world.SetDebugDraw(debugDraw);
 
         setInterval(function() {
-          // paddle.onFrame();
-          // world.Step(1/30, 10, 10);
-          // world.DrawDebugData();
           gameLogic.step(1/60);
+          gameView.setState(gameLogic.getState());
         }, 1000/60);
 
         // Socket
         socket.emit('subscribe', 'view');
         socket.on('pts', function (index, points) {
-          // $('#points_' + index).html(
-          //   index + ': ' + (points ? $.map(points, function(pt) { return pt.x + ',' + pt.y; }).join(' -> ') : 'NO TOUCH')
-          // );
-
-          //paddle.setTouchPoints(points);
           gameLogic.setTouchPoints(index, points);
         });
       });
-
     </script>
+    <style>
+      body { margin:0; padding:0; }
+      #game_view { position:absolute; }
+      #game_view .foreground { position:absolute; left:189px; top:47px; }
+    </style>
   </head>
   <body>
-    <div id="disco" style="position:absolute;">&nbsp;</div>
-    <div style="position:relative">
+    <div id="game_view">
+      <div class="foreground"></div>
+      <div class="background">
+        <img src="/images/walls.png">
+      </div>
+    </div>
+
+    <div style="position:relative; display:none; left:189px; top:47px;">
       <canvas id="bg" style="position:absolute;"></canvas>
       <canvas id="canvas" style="position:absolute;"></canvas>
     </div>
-    <div id="points_0">&nbsp;</div>
-    <div id="points_1">&nbsp;</div>
-    <div id="rotation">&nbsp;</div>
-    <div id="rotation_speed">&nbsp;</div>
   </body>
 </html>

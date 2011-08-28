@@ -7,10 +7,10 @@ function GameLogic(gameDef) {
   this.world = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0, 10), true);
   
   this.buildStaticBodies();
-  this.ball = new Ball(this.world, 0.4);
+  this.ball = new Ball(this.world, gameDef.ballRadius / gameDef.scale);
   this.paddles = [
-    new Paddle(this.world, 1.6, .15),
-    new Paddle(this.world, 1.6, .15)
+    new Paddle(this.world, .5 * gameDef.paddleWidth / gameDef.scale, .5 * gameDef.paddleHeight / gameDef.scale),
+    new Paddle(this.world, .5 * gameDef.paddleWidth / gameDef.scale, .5 * gameDef.paddleHeight / gameDef.scale)
   ];
   
   this.reset();
@@ -99,9 +99,10 @@ GameLogic.prototype.buildStaticBodies = function() {
   // Math.acos(4.0/5.0) = 0.6435011087932844
   // Math.PI/2 = 1.5707963267948966
   // (1.5707963267948966 - 0.6435011087932843) = 0.9272952180016123
-  var step = 2 * 0.9272952180016123 / 5;
+  var numSegments = 8;
+  var step = 2 * 0.9272952180016123 / numSegments;
 
-  for (var i=0; i<6; i++) {
+  for (var i=0; i<=10; i++) {
     var angle = 0.6435011087932844 + step * i;
     var cos = Math.cos(angle);
     var sin = Math.sin(angle);
@@ -109,7 +110,7 @@ GameLogic.prototype.buildStaticBodies = function() {
     var y = sin * (radius+1);
     fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
     fixDef.shape.SetAsBox(0.30909840600053745 * (radius+1), 1);
-    bodyDef.position.Set(halfWidth + x, height - y);
+    bodyDef.position.Set(halfWidth + x + (i < numSegments/2 ? 1 : -1) * this.gameDef.net.width / (2 * this.gameDef.scale), height - y);
     bodyDef.angle = angle * -1 + 1.5707963267948966;
     this.world.CreateBody(bodyDef).CreateFixture(fixDef);
   }
