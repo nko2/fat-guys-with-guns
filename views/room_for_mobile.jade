@@ -12,7 +12,7 @@ html(lang="en")
     var room_id = "#{room_id}";
     var phone_secret = "#{phone_secret}";
     var port = "#{port}";
-    var socket = connectToRoom("http://localhost:"+port, room_id , phone_secret);
+    var socket = connectToRoom(port, room_id , phone_secret);
 
     $(function() {
       var $body = $('body'),
@@ -95,7 +95,7 @@ html(lang="en")
         );*/
 
         isEmitPending = false;
-        socket.emit('pts', 0, [pt1, pt2]);
+        socket.emit('paddle', [pt1, pt2]);
       };
 
     });
