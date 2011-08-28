@@ -12,7 +12,6 @@ module.exports = function(app, redis_client) {
     app.get('/is_phone_attached/:phone_secret', function(req, res) {
         var phone_secret = req.params.phone_secret;
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
-            console.warn("is_attached", data);
             res.json({ is_connected: data.is_connected });
         });
     });
@@ -32,7 +31,6 @@ module.exports = function(app, redis_client) {
             res.redirect("/phone");
             return;
         }
-        console.warn("NAME", user_name);
         res.render('phone_connect', {
                     layout: 'mobile_layout',
                     connected: true,
@@ -45,7 +43,6 @@ module.exports = function(app, redis_client) {
     app.post('/phone_connect', function(req, res) {
         var phone_secret = req.body.phone_secret;
         Util.getRedisUserData(redis_client, phone_secret, function(data) {
-            console.warn("PHONE CONNECT", data);
             if (data.user_name) {
                 res.cookie('phone_secret', phone_secret, { httpOnly: false });
                 res.cookie('user_name', data.user_name, { httpOnly: false });

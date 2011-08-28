@@ -4,34 +4,38 @@ module.exports = function(app, redis_client) {
     app.get('/room_list', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
-        var room_list = [];
+//        var room_list = ["Reynold's Room", "Fawcette's Room", "Hawn's Room", "Bronson's Room", "Derek's Room", "Eastwood's Room" ];
+        var room_list = ["Nixon", "Carter", "Armstrong"];
 
         // Get Rooms
-        getServerData(function(results) {
-            results.forEach(function(row) {
+//        getServerData(function(results) {
+
+            /*results.forEach(function(row) {
                 room_list.push(row.gameId);
-            });
+            });*/
 
             res.render('room_list', {
                 user_name : user_name,
                 phone_secret : phone_secret,
-                room_list : room_list || ["foo", "bar", "taz", "gto"],
+                room_list : room_list,
                 javascripts : ["/javascripts/old_school.js"]
             });
-        });
+ //       });
 
     });
 
-    app.get('/room/:room_id', function(req, res) {
+    app.get('/room/:room_id/:user_action', function(req, res) {
         var room_id = req.params.room_id;
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
+        var user_action = req.params.user_action;
 
         res.render('room', {
+            layout : false,
             room_id : room_id,
             user_name : user_name,
-            phone_secret : phone_secret,
-            javascripts : [ "/javascripts/room.js"]
+            user_action : user_action,
+            phone_secret : phone_secret
         });
     });
 

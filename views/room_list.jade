@@ -1,13 +1,14 @@
 div
   div(style="float: right; text-align: left; padding: 0px 100px 0 0; width: 300px; font: 24px; aldrich;")
-    center
       div(class="aldrich pad_color", style="font-size: 40px;") Rooms:
       div(style="font: 24px aldrich;")
+        - room_list.forEach(function(room_name) {
         div
-          a(href="#") Room 1
-        div
-          a(href="#") Room 2
-        div
-          a(href="#") Room 3
+          div #{room_name}&nbsp;&nbsp;
+            span(style="font-size: 14px")
+              a(href="/room/#{room_name}/watch") Watch
+              span &nbsp;|&nbsp;
+              a(href="/room/#{room_name}/play") Play
+        - })
   div(class="aldrich", style="width: 390px;")
     p(class="printable") Awesome #{user_name}!^Now, pick a room at the right. You'll be able to watch a game or join in!^You are going to use your SMARTPHONE to control your paddle, so get your thumbs ready!.

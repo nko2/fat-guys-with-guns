@@ -1,11 +1,5 @@
 $(document).ready(function() {
-    $("#spectate").click(function() {
-       alert("Watch");
-    });
+    var socket = connectToRoom("", room_id , phone_secret);
 
-
-    $("#play").click(function() {
-       alert("Play");
-    });
 
 });
