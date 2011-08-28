@@ -4,10 +4,14 @@ module.exports = function(app, redis_client) {
     app.get('/room_list', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
+        var room_list = [];
+
         // Get Rooms
         getServerData(function(results) {
-            // Logic to handle results
-            console.warn("ServerData", results);
+            results.forEach(function(row) {
+                room_list.push(row.gameId);
+            });
+
             res.render('room_list', {
                 user_name : user_name,
                 phone_secret : phone_secret,
@@ -32,7 +36,7 @@ module.exports = function(app, redis_client) {
 
     function getServerData(callback) {
         var count = 0;
-        var results = {};
+        var results = [];
 
         var handleResult = function(err, name, data) {
             if (err) {
@@ -40,7 +44,10 @@ module.exports = function(app, redis_client) {
                 callback({});
                 return;
             }
-            results[name] = data;
+            // This should push a bunch of game rows into results
+            for(var item in data) {
+                results.push(data[item]);
+            }
             count += 1;
             if (count == 3) {
                 callback(results);

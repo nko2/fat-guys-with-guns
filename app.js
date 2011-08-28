@@ -12,8 +12,10 @@ var app = module.exports = express.createServer();
 // Configuration
 
 var redis_client = redis.createClient();
+
+redis_client.on("error", function (err) {
     console.log("Redis connection error to " + redis_client.host + ":" + redis_client.port + " - " + err);
-})
+});
 
 
 app.configure(function(){
