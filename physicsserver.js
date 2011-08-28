@@ -115,34 +115,38 @@ Game.prototype.end = function(winner){
 	});
 };
 Game.prototype.begin = function(){
-    var pads = chooseControllers(io.sockets.manager.rooms['/'+this.controller_sockets]);
-    this.c0 = pads[0];
-    this.c1 = pads[1];
-    this.running = true;
-    io.sockets.socket(this.c0).emit('nominate',0);
-    io.sockets.socket(this.c1).emit('nominate',1);
-    io.sockets.in(this.all_sockets).emit('time',15);
+    var controllers = io.sockets.manager.rooms['/'+this.controller_sockets];
     (function(game){
-	setTimeout(function(){
-		if(game.running){
-		    // Something to reset the physics goes here
-		    io.sockets.in(game.all_sockets).emit('start','new game state');
-		    // Start updating the paddle positions. Mocked right now
-		    io.sockets.socket(game.c0).on('controller',function(dat,num){
-			});
-		    io.sockets.socket(game.c1).on('controller',function(dat,num){    
-			});
-		    setupPhysics(game);
-		}
-	    },15*1000);
+	chooseControllers(controllers,function(a,b){
+		game.c0 = a;
+		game.c1 = b;
+		console.log(a);
+		console.log(b);
+		io.sockets.socket(game.c0).emit('nominate',0);
+		io.sockets.socket(game.c1).emit('nominate',1);
+		io.sockets.in(game.all_sockets).emit('time',15);
+		setTimeout(function(){
+			if(game.running){
+			    // Something to reset the physics goes here
+			    io.sockets.in(game.all_sockets).emit('start','new game state');
+			    // Start updating the paddle positions. Mocked right now
+			    io.sockets.socket(game.c0).on('controller',function(dat,num){
+				});
+			    io.sockets.socket(game.c1).on('controller',function(dat,num){    
+				});
+			    setupPhysics(game);
+			}
+		    },15*1000);
+	    });
     })(this);
+    this.running = true;
 };
 Game.prototype.redisRecord = function(){
     return {name:this.gameId,viewers:this.viewers,controllers:this.controllers,port:port};
 };
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
-function chooseControllers(set){
-    return set.slice(0,2);
+function chooseControllers(set,cont){
+    cont(set[0],set[1]);
 }
 // Sets up the game's physics loops
 function setupPhysics(game){
