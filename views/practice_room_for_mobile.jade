@@ -1,0 +1,14 @@
+!!! 5
+html(lang="en")
+ head
+  style(type="text/css")
+    html { height:100%; }
+    body { height:100%; margin:0; padding:0; background-color: #c00; user-select:none; text-align:center; }
+    body.down { background-color:#0c0; }
+  script(type="text/javascript")
+    var id = "#{id}";
+    var port = 1340;
+  script(src="http://code.jquery.com/jquery-1.6.2.min.js")
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/pratice_control.js")
+ body

@@ -1,14 +1,31 @@
 !!! 5
 html(lang="en")
- head
-  style(type="text/css")
-    html { height:100%; }
-    body { height:100%; margin:0; padding:0; background-color: #c00; user-select:none; text-align:center; }
-    body.down { background-color:#0c0; }
-  script(type="text/javascript")
-    var id = "#{id}";
-    var port = 1340;
-  script(src="http://code.jquery.com/jquery-1.6.2.min.js")
-  script(src="/socket.io/socket.io.js")
-  script(src="/javascripts/pratice_control.js")
- body
+  head
+    link(href="/stylesheets/view.css", rel="stylesheet", type="text/css")
+    script(type="text/javascript")
+      var id = "#{id}";
+      var port = 1340;
+    script(src="http://code.jquery.com/jquery-1.6.2.min.js")
+    script(src="/javascripts/exports.js")
+    script(src="/javascripts/Box2D.min.js")
+    script(src="/javascripts/game_state.js")
+    script(src="/javascripts/game_def.js")
+    script(src="/javascripts/arena.js")
+    script(src="/javascripts/paddle.js")
+    script(src="/javascripts/ball.js")
+    script(src="/javascripts/game_logic.js")
+    script(src="/javascripts/disco_wall.js")
+    script(src="/javascripts/game_view.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/pratice_observe.js")
+  body
+    div(id="game_view")
+      div(class="foreground at_origin")
+      div(class="background")
+        div(class="disco_wall at_origin")
+        img(class="page_chrome", src="/images/background.png")
+        img(class="walls", src="/images/walls.png")
+        div(class="score")
+          div(class="player_1") 00
+          div(class="player_2") 00
+
