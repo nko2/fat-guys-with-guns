@@ -8,6 +8,7 @@ Paddle = function(world, length, thickness) {
   fixtureDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
   fixtureDef.shape.SetAsBox(length || 1, thickness || .1);
   fixtureDef.density = 1.0;
+  fixtureDef.restitution = 0.7;
   this.body.CreateFixture(fixtureDef);
 
   this.rotationTarget = null;
@@ -36,8 +37,8 @@ Paddle.prototype.setTouchPoints = function (points) {
     var pt1 = points[0],
         pt2 = points[1],
         rads = Math.atan2( (pt2.y - pt1.y), (pt2.x - pt1.x) );
-
-    this.rotationTarget = rads;
+    
+    this.rotationTarget = rads;//ptsAngle;
     
     var ptMid = new Box2D.Common.Math.b2Vec2(.5 * (pt2.x + pt1.x), .5 * (pt2.y + pt1.y));
     
@@ -85,16 +86,17 @@ Paddle.prototype.updatePosition = function (t) {
 };
 
 Paddle.prototype.updateRotation = function (t) {
-  var dRotation = this.rotationTarget - this.body.GetAngle(),
+  this.body.SetAngle(this.rotationTarget);
+  this.body.SetAwake(true);
+  return true;
+  
+/*  var dRotation = this.rotationTarget - this.body.GetAngle(),
       dRotationAbs = Math.abs(dRotation);
     
   if(dRotationAbs < 0.01) {
     this.body.SetAngle(this.rotationTarget);
-    // $('#rotation_speed').text('---');
     return false;
   }
-
-  // $('#rotation_speed').text(dRotation);
 
   this.body.SetAwake(true);
 
@@ -109,5 +111,5 @@ Paddle.prototype.updateRotation = function (t) {
   }
   this.body.SetAngularVelocity(Paddle.fpsFactor * dRotation / t);
 
-  return true;
+  return true;*/
 };

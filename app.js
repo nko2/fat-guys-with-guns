@@ -55,6 +55,7 @@ app.listen(process.env.NODE_ENV === 'production' ? 80 :3000,function(){
 });
 
 var io = sio.listen(app);
+io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
   socket.on('subscribe', function(type) {
     if(type == 'controller') {

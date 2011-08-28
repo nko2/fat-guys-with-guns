@@ -8,9 +8,11 @@ function Ball(world, radius) {
   var fixtureDef = new Box2D.Dynamics.b2FixtureDef();
   fixtureDef.shape = new Box2D.Collision.Shapes.b2CircleShape(radius);
   fixtureDef.density = 1.0;
-  fixtureDef.restitution = .9;
+  fixtureDef.restitution = 0;// Restitution will be dictated by the walls and paddles
   this.body.CreateFixture(fixtureDef);
 }
+
+Ball.vMax = 20;
 
 Ball.prototype.getState = function() {
   Paddle.prototype.getState = function() {
@@ -26,4 +28,11 @@ Ball.prototype.getState = function() {
 Ball.prototype.setTransform = function(x, y, rotation) {
   this.body.SetPosition( new Box2D.Common.Math.b2Vec2(x, y) );
   this.body.SetAngle(rotation);
+};
+
+Ball.prototype.onFrame = function(t) {
+  var v = this.body.GetLinearVelocity();
+  if(v.Length() > Ball.vMax) {
+    v.Multiply(Ball.vMax / v.Length());
+  }
 };

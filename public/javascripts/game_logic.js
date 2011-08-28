@@ -5,8 +5,8 @@ function GameLogic(gameDef) {
   this.buildStaticBodies();
   this.ball = new Ball(this.world, 0.4);
   this.paddles = [
-    new Paddle(this.world, 1.4, .15),
-    new Paddle(this.world, 1.4, .15)
+    new Paddle(this.world, 1.6, .15),
+    new Paddle(this.world, 1.6, .15)
   ];
   
   this.reset();
@@ -27,6 +27,7 @@ GameLogic.prototype.step = function(t) {
   this.paddles.forEach( function(paddle) {
     paddle.onFrame(t);
   });
+  this.ball.onFrame(t);
   this.world.Step(t, 10, 10);
   this.world.DrawDebugData();
   
@@ -51,7 +52,7 @@ GameLogic.prototype.buildStaticBodies = function() {
   bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
   fixDef.density = 1.0;
   fixDef.friction = 0.5;
-  fixDef.restitution = 0.2;
+  fixDef.restitution = 0.8;
 
   var s = this.gameDef.scale;
   var width = this.gameDef.courtWidth / s;
