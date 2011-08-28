@@ -75,4 +75,5 @@ PGame.prototype.connect = function(id,socket){
 	    });
     })(this);
     socket.emit('connected',id);
+    gameBySocketId[socket.id] = this;
 };
