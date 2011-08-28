@@ -109,10 +109,12 @@ Game.prototype.end = function(winner){
     if(this.c0) io.sockets.socket(this.c0).removeAllListeners('paddle');
     if(this.c1) io.sockets.socket(this.c1).removeAllListeners('paddle');
     winner = [this.c0,this.c1][winner];
-    redis.get(redisKeys[winner],function(err,data){
-	    var fail = {};
-	    io.sockets.in(this.all_sockets).emit('win',data || fail);
-	});
+    (function(game){
+	redis.get(redisKeys[winner],function(err,data){
+		var fail = {};
+		io.sockets.in(game.all_sockets).emit('win',data || fail);
+	    });
+    })(this);
 };
 Game.prototype.begin = function(){
     var controllers = io.sockets.manager.rooms['/'+this.controller_sockets];
@@ -145,7 +147,27 @@ Game.prototype.redisRecord = function(){
     return {name:this.gameId,viewers:this.viewers,controllers:this.controllers,port:port};
 };
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
-function chooseControllers(set,cont){
+function chooseControllers(set,cont){    
+    // It turns out that writing the comparison predicate for the data is just a pain in the ass. Randomly schedule, for now.
+    /*  var keys = set.map(function(i){return redisKeys[i];});
+    redis.mget(keys,function(err,res){
+	    if(err){
+		console.log("Redis error, with keys :"+keys);
+		cont(set[0],set[1]);//Just choose the first two...
+	    }else{
+		res = res.map(function(obj,index){return {obj:obj,ctrl:set[index]};});
+		res.sort(function(a,b){          
+			//Some predicate for the epicness.
+
+
+
+			return Math.random()-0.5;	
+		    });
+		cont(res[0].ctrl,res[1].ctrl);
+	    }
+	});
+    */
+    set.sort(function(a,b){return Math.random()-0.5;});
     cont(set[0],set[1]);
 }
 // Sets up the game's physics loops
