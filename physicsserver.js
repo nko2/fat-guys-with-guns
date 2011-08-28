@@ -24,9 +24,10 @@ var games = {},
 
 io.sockets.on('connection',function(socket){
         socket.on('subscribe',function(type,gameId,redisKey){
+		gameId = gameId.toString();
                 var room = games[gameId];
                 if(typeof room === 'undefined'){
-                    socket.emit('error',"Bad room id");
+                    socket.emit('error',"Bad room id"+gameId);
                 }
                 if(room)
                     if(room.join(socket,type)){
