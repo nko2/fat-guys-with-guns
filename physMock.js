@@ -8,4 +8,7 @@ GameLogic.prototype.step = function(timeStep){
 };
 GameLogic.prototype.setPaddle = function(index,point){
 };
+GameLogic.prototype.over = function(){
+    return false;
+};
 exports.GameLogic = GameLogic;

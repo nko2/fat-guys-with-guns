@@ -176,6 +176,8 @@ function chooseControllers(set,cont){
 function setupPhysics(game){
     var loop = function(){
 	// Needs some logic to terminate, however
+	if(game.physics.over())
+	    game.end();
 	if(game.running){
 	    // Update the physics here
 	    var state = game.physics.step(1/300);
