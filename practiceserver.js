@@ -50,7 +50,6 @@ PGame = function(id){
     this.gid = id;
     this.c0 = null;
     this.c1 = null;
-    gameBySocketId[host.id] = this;
 };
 
 PGame.prototype.connect = function(type,socket){
