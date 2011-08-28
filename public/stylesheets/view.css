@@ -2,6 +2,13 @@ body { margin:0; padding:0; }
 #game_view { position:absolute; }
 #game_view .background { position:relative; z-index:0; }
 #game_view .foreground { position:relative; z-index:1; }
+#game_view .messaging { position:relative; z-index:2; position:absolute; left:360px;
+  top:200px; width:400px; height:40px; text-align:center; background-color:#000;
+  border-radius:30px; border:2px solid #aaa; opacity:1; line-height:40px;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#888));
+  background-image: -moz-linear-gradient(100% 100% 90deg, #333, #888 );
+  padding:40px; font: 20px aldrich; color:#ccc;
+}
 #game_view .at_origin { position:absolute; left:189px; top:86px; }
 #game_view .page_chrome { position:absolute; left:0; top:0px; }
 #game_view .walls { position:absolute; left:0; top:40px; }
