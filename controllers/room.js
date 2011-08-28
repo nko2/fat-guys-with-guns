@@ -15,7 +15,8 @@ module.exports = function(app, redis_client) {
             res.render('room_list', {
                 user_name : user_name,
                 phone_secret : phone_secret,
-                room_list : room_list || ["foo", "bar", "taz", "gto"]
+                room_list : room_list || ["foo", "bar", "taz", "gto"],
+                javascripts : ["/javascripts/old_school.js"]
             });
         });
 

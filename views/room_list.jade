@@ -1,8 +1,13 @@
 div
-    p Welcome: #{user_name}
-    div(style="margin-bottom: 5px;") Pick a room to spectate or view:
-    - room_list.forEach(function(room) {
-      div
-        a(href="/room/#{room}") Room #{room}
-    - });
-div
+  div(style="float: right; text-align: left; padding: 0px 100px 0 0; width: 300px; font: 24px; aldrich;")
+    center
+      div(class="aldrich pad_color", style="font-size: 40px;") Rooms:
+      div(style="font: 24px aldrich;")
+        div
+          a(href="#") Room 1
+        div
+          a(href="#") Room 2
+        div
+          a(href="#") Room 3
+  div(class="aldrich", style="width: 390px;")
+    p(class="printable") Awesome #{user_name}!^Now, pick a room at the right. You'll be able to watch a game or join in!^You are going to use your SMARTPHONE to control your paddle, so get your thumbs ready!.
