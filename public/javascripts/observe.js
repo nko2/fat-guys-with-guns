@@ -7,21 +7,25 @@ $(function () {
   function onGameOver(winner){
     console.log(winner);
     console.log("Game over, won by"+winner.user_name);
+    gameView.displayMessage("Game over, won by"+winner.user_name);
   }
   function onCountdown(n){
-      if(n > 0){
-	  emitMessage(n.toString()+' seconds');
-	  setTimeout(function(){onCountdown(n-1);},1000);
-      }else{
-	  emitMessage('');
-      }
+    if(n > 0){
+      gameView.displayMessage("Game will start in " + n + "seconds");
+      setTimeout(function(){onCountdown(n-1);},1000);
+    }
+    else {
+      gameView.displayMessage(null);
+    }
   }
   function onUpdate(dat){
     gameView.drawState(dat);
   }
   function onStart(gameState){
-      emitMessage("Game started!");
-      setTimeout(function(){emitMessage('');},2000);
+      gameView.displayMessage("Game starting");
+      setTimeout(function(){
+        gameView.displayMessage(null);
+      },2000);
   }
 
   function connectToRoom(port,room,redis){

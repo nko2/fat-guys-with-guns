@@ -6,7 +6,8 @@ function GameView(gameDef, $container) {
       $paddles = [],
       $score0 = $background.find('.score .player_1'),
       $score1 = $background.find('.score .player_2'),
-      $ball = null;
+      $ball = null,
+      $message = $container.find('.messaging');
 
   $foreground.width(gameDef.courtWidth);
   $foreground.height(gameDef.courtHeight);
@@ -74,6 +75,17 @@ function GameView(gameDef, $container) {
           $score1.text(event.score[1]);
         }
       });
+    }
+  };
+  
+  this.displayMessage = function(message) {
+    $message.stop(true);// in case it's already fading in/out
+    if(!message) {
+      $message.fadeOut();
+    }
+    else {
+      $message.html(message);
+      $message.fadeIn();
     }
   };
 }
