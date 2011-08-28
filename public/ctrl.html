@@ -14,14 +14,20 @@
             pt2 = { x:null, y:null },
             ptTmp = null,
             isEmitPending = false,
+            ctx = document.getElementById('canvas').getContext('2d'),
             socket = io.connect();
 
+        ctx.canvas.width = $body.width();
+        ctx.canvas.height = $body.height();
+        ctx.lineWidth = 20;
+        ctx.lineCap = 'round';
+
         socket.emit('subscribe', 'controller');
-        
+
         $body.bind('touchstart', touchchange);
         $body.bind('touchmove', touchmove);
         $body.bind('touchend', touchchange);
-        
+
         setInterval(function() {
           if(isEmitPending) {
             emitNow();
@@ -62,6 +68,12 @@
           pt2.x = touches[1].pageX / width;
           pt2.y = touches[1].pageY / width;
           
+          ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+          ctx.beginPath();
+          ctx.moveTo(touches[0].pageX, touches[0].pageY);
+          ctx.lineTo(touches[1].pageX, touches[1].pageY);
+          ctx.stroke();
+
           if(immediate) {
             emitNow();
           }
@@ -75,14 +87,14 @@
           socket.emit('pts', ctrlId, null);
           isEmitPending = false;
         }
-        
+
         function emitNow() {
           /*$body.html(
             $.map([pt1, pt2], function(pt) {
               return '<div>' + pt.x + ', ' + pt.y + '</div>';
             }).join('')
           );*/
-        
+
           isEmitPending = false;
           socket.emit('pts', ctrlId, [pt1, pt2]);
         };
@@ -95,6 +107,6 @@
     </style>
   </head>
   <body>
-    &nbsp;
+    <canvas id="canvas"></canvas>
   </body>
 </html>
