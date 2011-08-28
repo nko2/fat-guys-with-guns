@@ -138,9 +138,8 @@ Game.prototype.begin = function(){
     })(this);
 };
 Game.prototype.redisRecord = function(){
-    return {name:this.gameId,viewers:this.viewers,controllers:this.controllers};
+    return {name:this.gameId,viewers:this.viewers,controllers:this.controllers,port:port};
 };
-
 // Takes an array of possible controller ids and chooses two. Can map controller id to redis keys.
 function chooseControllers(set){
     return set.slice(0,2);
