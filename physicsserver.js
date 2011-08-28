@@ -191,9 +191,9 @@ function setupPhysics(game){
             game.end();
         if(game.running){
             // Update the physics here
-            var state = game.physics.step(1/30);
+            var state = game.physics.step(1000/30);
             io.sockets.in(game.all_sockets).volatile.emit('update',state);
-            setTimeout(loop,1/30)
+            setTimeout(loop,1000/30)
         }
     };
     loop();
