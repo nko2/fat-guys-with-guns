@@ -1,6 +1,13 @@
 !!! 5
 html(lang="en")
  head
-     script(src='http://code.jquery.com/jquery-1.6.1.min.js')
+     script(src="http://code.jquery.com/jquery-1.6.1.min.js")
+     script(src="/javascripts/control.js")
+     script(src="/socket.io/socket.io.js")
+     script(type="text/javascript")
+        var room_id = "#{room_id}";
+        var phone_secret = "#{phone_secret}";
+        var port = "#{port}";
+        var socket = connectToRoom("http://localhost:"+port, room_id , phone_secret);
  body
   div Booyah

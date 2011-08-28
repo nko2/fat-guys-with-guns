@@ -4,15 +4,17 @@ module.exports = function(app, redis_client) {
     app.get('/room_list', function(req, res) {
         var user_name = req.cookies['user_id'];
         var phone_secret = req.cookies['phone_secret'];
-//        var room_list = ["Reynold's Room", "Fawcette's Room", "Hawn's Room", "Bronson's Room", "Derek's Room", "Eastwood's Room" ];
-        var room_list = ["Nixon", "Carter", "Armstrong"];
+        var room_list = [];
 
         // Get Rooms
-//        getServerData(function(results) {
-
-            /*results.forEach(function(row) {
-                room_list.push(row.gameId);
-            });*/
+        getServerData(function(results) {
+            for(var key in results) {
+                try {
+                    room_list.push(JSON.parse(results[key]));
+                }catch(ex) {
+                    // Messed up way to get Redis results, but it will have to work for now
+                }
+            }
 
             res.render('room_list', {
                 user_name : user_name,
@@ -20,7 +22,7 @@ module.exports = function(app, redis_client) {
                 room_list : room_list,
                 javascripts : ["/javascripts/old_school.js"]
             });
- //       });
+        });
 
     });
 
@@ -30,12 +32,20 @@ module.exports = function(app, redis_client) {
         var phone_secret = req.cookies['phone_secret'];
         var user_action = req.params.user_action;
 
-        res.render('room', {
-            layout : false,
-            room_id : room_id,
-            user_name : user_name,
-            user_action : user_action,
-            phone_secret : phone_secret
+        getServerData(function(data) {
+            var room_data = JSON.parse(data[room_id]);
+            if (user_action=="play") {
+                Util.setRedisUserData(redis_client, phone_secret, { room_name : room_data.name, port : room_data.port});
+            }
+
+            res.render('room', {
+                layout : false,
+                room_id : room_id,
+                user_name : user_name,
+                user_action : user_action,
+                phone_secret : phone_secret,
+                port : room_data.port
+            });
         });
     });
 
@@ -43,6 +53,11 @@ module.exports = function(app, redis_client) {
         var count = 0;
         var results = [];
 
+        redis_client.hgetall("rooms", function(err, data) {
+            callback(data);
+        });
+
+/*
         var handleResult = function(err, name, data) {
             if (err) {
                 console.warn(err);
@@ -60,6 +75,7 @@ module.exports = function(app, redis_client) {
         };
 
         redis_client.hgetall("server-0", function(err, data) {
+            console.warn(data);
             handleResult(err, "server-0", data);
         });
 
@@ -70,6 +86,7 @@ module.exports = function(app, redis_client) {
         redis_client.hgetall("server-2", function(err, data) {
             handleResult(err, "server-2", data);
         });
+        */
     }
 
 }

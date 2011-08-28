@@ -10,8 +10,11 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(data){
                 if (data) {
-                    console.log("Polled Data", data);
-                    setTimeout(checkForAction, 3000);
+                    if (data.redirect) {
+                        window.location = data.redirect;
+                    }else {
+                        setTimeout(checkForAction, 3000);
+                    }
                 }else {
                     setTimeout(checkForAction, 3000);
                 }
