@@ -13,6 +13,7 @@ $(function () {
   );
 
   function onPaddle(index, points) {
+    console.log('paddle');
     gameLogic.setTouchPoints(index, points);
   }
 
