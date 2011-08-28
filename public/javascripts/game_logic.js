@@ -1,4 +1,6 @@
 var Box2D = require('./Box2D.min.js').Box2D;
+var Ball = require('./ball.js').Ball;
+var Paddle = require('./paddle.js').Paddle;
 
 function GameLogic(gameDef) {
   this.gameDef = gameDef;

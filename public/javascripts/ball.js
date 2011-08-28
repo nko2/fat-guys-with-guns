@@ -1,3 +1,4 @@
+var Box2D = require('./Box2D.min.js').Box2D;
 function Ball(world, radius) {
   var bodyDef = new Box2D.Dynamics.b2BodyDef();
   bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
@@ -36,3 +37,4 @@ Ball.prototype.onFrame = function(t) {
     v.Multiply(Ball.vMax / v.Length());
   }
 };
+exports.Ball = Ball;

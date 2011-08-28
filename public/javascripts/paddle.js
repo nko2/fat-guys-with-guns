@@ -1,3 +1,5 @@
+var Box2D = require('./Box2D.min.js').Box2D;
+
 Paddle = function(world, length, thickness) {
   var bodyDef = new Box2D.Dynamics.b2BodyDef();
   bodyDef.type = Box2D.Dynamics.b2Body.b2_kinematicBody;
@@ -113,3 +115,4 @@ Paddle.prototype.updateRotation = function (t) {
 
   return true;*/
 };
+exports.Paddle = Paddle;
