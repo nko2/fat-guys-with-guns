@@ -19,6 +19,10 @@ function onError(err){
     console.log('Damn error'+err);
 }
 
+function onState(currentState){
+
+}
+
 function tick(){
     if(controllerNumber !== null){
 	controllerSocket.emit('controller','some data',controllerNumber);
@@ -33,6 +37,7 @@ function connectToRoom(server,room,redis){
     socket.on('win',onGameOver);
     socket.on('time',onCountdown);
     socket.on('start',onStart);
+    socket.on('state',onState);
     socket.on('nominate',onNominate);
     controllerSocket = socket;
     return socket;

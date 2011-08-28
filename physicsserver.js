@@ -9,7 +9,8 @@ if (process.getuid() === 0)
 	});
 console.log("Started physics server "+serverNumber);
 var io = require('socket.io').listen(port),
-    redis = require('redis').createClient();
+    redis = require('redis').createClient(),
+    GameLogic = require('./physMock.js').GameLogic;
 
 redis.on("error", function (err) {
 	console.log("Redis connection error to " + redis.host + ":" + redis.port + " - " + err);
@@ -35,7 +36,7 @@ io.sockets.on('connection',function(socket){
 		    if(room.join(socket,type)){
 			gameBySocketId[socket.id] = gameId;
 			redisKeys[socket.id] = redisKey;
-			//Probably want to send current world data here
+			socket.emit('state',room.physics.getState());
 		    }else{
 			socket.emit('error',"This game room is full");			
 		    }
@@ -58,7 +59,7 @@ io.sockets.on('connection',function(socket){
 Game = function(id){
     this.gameId = id;
     //Initialize a new physics object here
-    this.physics = null;
+    this.physics = new GameLogic();
     this.c0 = null;
     this.c1 = null;
     this.running = false;
@@ -129,12 +130,13 @@ Game.prototype.begin = function(){
 		io.sockets.in(game.all_sockets).emit('time',15);
 		setTimeout(function(){
 			if(game.running){
-			    // Something to reset the physics goes here
+			    game.physics.reset();
 			    io.sockets.in(game.all_sockets).emit('start','new game state');
-			    // Start updating the paddle positions. Mocked right now
 			    io.sockets.socket(game.c0).on('controller',function(dat,num){
+				    game.physics.setPaddle(0,dat);
 				});
 			    io.sockets.socket(game.c1).on('controller',function(dat,num){    
+				    game.physics.setPaddle(1,dat);
 				});
 			    setupPhysics(game);
 			}
@@ -176,8 +178,9 @@ function setupPhysics(game){
 	// Needs some logic to terminate, however
 	if(game.running){
 	    // Update the physics here
-	    io.sockets.in(game.all_sockets).volatile.emit('update','');
-	    setTimeout(loop,1000);
+	    var state = game.physics.step(1/300);
+	    io.sockets.in(game.all_sockets).volatile.emit('update',state);
+	    setTimeout(loop,1/30)
 	}
     };
     loop();
@@ -192,7 +195,7 @@ function updateRedis(){
 	    if(err)
 		console.log("Redis-error:"+err);
 	});
-    setTimeout(updateRedis,10*1000);
+    setTimeout(updateRedis,5*1000);
 }
 updateRedis();
 //This is the server's real main-loop. Checks if games can be started, and then starts them

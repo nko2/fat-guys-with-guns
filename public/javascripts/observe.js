@@ -10,6 +10,10 @@ function onUpdate(dat){
 function onStart(gameState){
     console.log("Starting game");
 }
+
+function onState(currentState){
+
+}
 function onError(err){
     console.log('Damn error'+err);
 }
@@ -21,6 +25,7 @@ function connectToRoom(server,room,redis){
     socket.on('win',onGameOver);
     socket.on('time',onCountdown);
     socket.on('start',onStart);
+    socket.on('state',onState);
     socket.on('update',onUpdate);
     return socket;
 }
