@@ -51,6 +51,9 @@ GameLogic.PLAYER_2 = 1;
 GameLogic.prototype.pointScored = function(playerNum, reason) {
   this.score[playerNum]++;
   this.enterServeMode(playerNum);
+  this.state.event = {
+    score: this.score;
+  }
   console.log("Player " + (playerNum + 1) + " scores, because " + reason);
 };
 
