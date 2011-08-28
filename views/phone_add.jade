@@ -1,0 +1,15 @@
+div(class="screen_centered_mobile")
+  center
+    div(class="monoton_title_mobile")
+      span(class="pad_color") PAD
+      span(class="paddle_color") PADDLE
+    div(class="center")
+      div(style="margin-bottom: 15px;") You are about to use your smartpone for something <b>amazing!</b>
+      div(style="margin-bottom: 5px;")
+        label Give us a name to call you
+      form(action="phone_add", method="post",onsubmit="return $('#user_name').val().length > 0")
+          input(type="text", id="user_name", name="user_name", style="text-align: center;", autocomplete="off")
+          input(type="hidden", name="phone_secret", value="#{phone_secret}")
+          input(type="hidden", name="room_id", value="#{room_id}")
+          div
+            input(type="submit", value="Go!", class="submit_button")

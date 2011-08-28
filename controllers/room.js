@@ -1,4 +1,5 @@
 var Util = require('../helpers/util');
+var StringHelper = require('../helpers/string_helper');
 
 module.exports = function(app, redis_client) {
   app.get('/room_list', function(req, res) {
@@ -14,6 +15,39 @@ module.exports = function(app, redis_client) {
       phone_secret : phone_secret,
       javascripts : ["/javascripts/old_school.js", "/javascripts/room_list_poller.js"]
     });
+
+  });
+
+  app.get('/practice', function(req, res) {
+    var user_name = req.cookies['user_id'];
+    var phone_secret = req.cookies['phone_secret'];
+
+    // Clear user room data
+    Util.setRedisUserData(redis_client, phone_secret, { room_name : "", port : ""});
+
+    res.render('practice', {
+      user_name : user_name,
+      phone_secret : phone_secret,
+      url : "/practice/" + StringHelper.createRandomWord(7),
+      javascripts : ["/javascripts/old_school.js", "/javascripts/practice_page.js"]
+    });
+  });
+
+  app.get('/practice/:id', function(req, res) {
+    var user_name = req.cookies['user_id'];
+    var phone_secret = req.cookies['phone_secret'];
+    var practice_id = req.params.id;
+    if (Util.isMobile(req)) {
+      res.render('practice_room_for_mobile', {
+        layout : false,
+        id : practice_id
+      });
+    }else {
+      res.render('practice_room_for_browser', {
+        layout : false,
+        id : practice_id
+      });
+    }
 
   });
 
@@ -66,6 +100,7 @@ module.exports = function(app, redis_client) {
     var results = [];
 
     redis_client.hgetall("rooms", function(err, data) {
+      if (err) {  console.warn(err); };
       callback(data);
     });
   }
