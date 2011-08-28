@@ -17,7 +17,6 @@ redis.on("error", function (err) {
 	console.log("Redis connection error to " + redis.host + ":" + redis.port + " - " + err);
     });
 
-
 var games = {},
     gameBySocketId = {},
     redisKeys = {},
@@ -187,15 +186,21 @@ function setupPhysics(game){
 }
 // Update the game room data on redis every n seconds.
 setInterval(function(){
-	var rooms = [];
+	var rooms = {};
 	for(var i in games){
-	    rooms.push(games[i].redisRecord());
+	    i = games[i];
+	    rooms[i.gameId] = i.redisRecord();
 	}
-	redis.mset('server-'+serverNumber,JSON.stringify(rooms),function(err,_){
+	console.log(rooms);
+	redis.hmset('rooms',rooms,function(err,_){
 		if(err)
-		    console.log("Redis-error:"+err);
-	    });	
+		    console.log('Redis-error:'+err);
+	    });
     },5000);
+
+
+
+
 //This is the server's real main-loop. Checks if games can be started, and then starts them
 setInterval(function(){
 	for(var i in games){
@@ -204,5 +209,3 @@ setInterval(function(){
 		i.begin();
 	}
     },250);
-
-
